@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -141,7 +141,7 @@ canvas{width:100%!important;height:100%!important}
 <div class="card"><h3>「矛盾现状」核心指标对比</h3>
 <div class="chart-wrap" style="height:260px"><canvas id="analysisChart1"></canvas></div>
 <div class="insight-box" style="margin-top:8px;font-size:11px;color:#94a3b8">
-周均被吵醒2.77次 vs 月均冲突0.63次：<strong style="color:#f87171">隐性摩擦是显性冲突的4.4倍</strong>，大量矛盾以"忍耐"消化。
+周均被吵醒2.77次 vs 月均冲突0.63次：<strong style="color:#f87171">隐性摩擦是显性冲突的4.4倍</strong>。50%的人选择"先忍耐，实在不行再沟通"——大量矛盾以沉默消化而非直接爆发。
 </div>
 </div>
 <div class="card"><h3>「行为画像」关键行为指标</h3>
@@ -177,6 +177,13 @@ canvas{width:100%!important;height:100%!important}
 </div>
 
 <div class="section-title" style="font-size:16px;margin:20px 0 12px;color:#a5b4fc">—— 宿舍人格因素（Q43人格量表效度，N=41）</div>
+
+<div style="margin-bottom:16px;padding:12px 16px;background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.2);border-radius:10px;font-size:13px;display:flex;align-items:center;gap:12px;">
+<span style="font-size:18px;">🧬</span>
+<span style="color:#94a3b8;">自研人格测评工具在线体验：</span>
+<a href="https://dawwnforu.github.io/dorm-personality-test/" target="_blank" style="color:#818cf8;text-decoration:none;font-weight:600;border-bottom:1px dashed #818cf8;padding-bottom:2px;">宿舍人格鉴定局 → 16种宿舍人格测试</a>
+<span style="color:#64748b;font-size:11px;margin-left:auto;">点击跳转至独立测评网站</span>
+</div>
 
 <!-- Dimension explanations -->
 <div class="card" style="margin-bottom:16px">
@@ -382,6 +389,63 @@ t_ei, p_ei = stats.ttest_ind(e_fair, i_fair)
 </div>
 </div>
 
+
+<div class="section-title">🎯 宿舍生活幸福感预测：哪些因素真正关键？</div>
+
+<div class="card" style="margin-bottom:16px">
+<h3>分析目的</h3>
+<div class="insight-box" style="margin-top:0;font-size:13px;">
+以下分析将<strong>焦虑天数、关系痛苦度、调宿/租房念头、被吵醒次数、冲突次数</strong>作为"宿舍生活幸福感"的5个核心指标，逐一检验15个候选预测变量的效应量。目标：<strong>筛选出真正能预测宿舍适应力的因素，淘汰无关问题，为宿舍分配系统提供科学依据</strong>。
+</div>
+</div>
+
+<div class="grid-2" style="margin-bottom:16px">
+<div class="card">
+<h3>因素覆盖度排名（预测≥3个幸福感指标的因素）</h3>
+<div class="chart-wrap" style="height:280px"><canvas id="wellbeingCoverChart"></canvas></div>
+<div class="insight-box" style="margin-top:8px;font-size:11px;color:#94a3b8;">
+<strong style="color:#f87171">作息节律(L/O)</strong>和<strong style="color:#f59e0b">游戏频率</strong>各自覆盖全部5个指标——作息是贯穿一切的元变量。作息一致性、性别、公平感、噪音敏感度各覆盖3-4个指标。
+</div>
+</div>
+<div class="card">
+<h3>极端组对比：高痛苦 vs 低痛苦（Top 30% vs Bottom 30%）</h3>
+<div class="chart-wrap" style="height:280px"><canvas id="wellbeingExtremeChart"></canvas></div>
+<div class="insight-box" style="margin-top:8px;font-size:11px;color:#94a3b8;">
+低痛苦组焦虑均值<strong>0.7天</strong>，高痛苦组<strong>5.1天</strong>。两组在作息一致性(d=1.16**)、L/O(d=2.04**)、游戏频率(d=-0.97**)、冲突方式(d=-0.63**)上差异极大。
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+<h3>📋 宿舍分配系统问题筛选建议</h3>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;font-size:13px;">
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#10b981">✅ 强烈建议纳入（预测力★★★★★）</strong><br>
+<strong>1. 作息匹配</strong> — 入睡/起床时间（覆盖5/5指标，L/O d=2.04**）<br>
+<strong>2. 睡眠噪音敏感度(Q40)</strong> — 7类噪音耐受分型（Kruskal-Wallis p=0.003**，高低差3倍焦虑）<br>
+这两个因素解释了极端组间最大的方差，应作为<strong>宿舍分配第一优先级</strong>。
+</div>
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#f59e0b">⚠️ 建议纳入（预测力★★★★☆）</strong><br>
+<strong>3. 卫生标准(Q22)</strong> — T/M维度多指标显著，卫生是矛盾第三来源<br>
+<strong>4. 游戏频率&时段(Q32/34)</strong> — 覆盖5/5指标，区分游戏型/安静型作息<br>
+<strong>5. 冲突沟通风格(Q20)</strong> — 预测调宿念头最强(d=0.77**)和关系痛苦(d=0.60**)
+</div>
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#818cf8">🔶 辅助参考（预测力★★★☆☆）</strong><br>
+<strong>6. 住校经历(Q8)</strong> — 无经验者痛苦度更高(d=-0.54*)，用于新生预适应标记<br>
+<strong>7. 公平感(Q29)</strong> — 覆盖3/5指标，可辅助检测潜在矛盾
+</div>
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#ef4444">❌ 建议降权/移除（预测力★★☆☆☆及以下）</strong><br>
+<strong>E/I社交能量</strong> — 不预测任何幸福感指标（d均<0.3），不应作为分配因子<br>
+<strong>独生子女</strong> — 仅预测调宿念头(d=0.35†)，效应量小<br>
+<strong>经济条件/地域文化</strong> — 与幸福感指标均无显著关联<br>
+<strong>锻炼频率</strong> — 效应量小，可移除
+</div>
+</div>
+</div>
+
 </div>
 
 <div class="footer">
@@ -476,13 +540,17 @@ new Chart(document.getElementById('otherFactor1Chart'),{type:'bar',data:{labels:
 new Chart(document.getElementById('otherFactor2Chart'),{type:'bar',data:{labels:['独生子女 × 舍友关系(1-5)','沟通方式 × 舍友关系(1-5)'],datasets:[{label:'组A',data:[2.62,2.55],backgroundColor:'#06b6d4'},{label:'组B',data:[2.86,2.88],backgroundColor:'#ec4899'}]},options:{...opt,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:12,generateLabels:function(c){return[{text:'独生 / 直接沟通',fillStyle:'#06b6d4',strokeStyle:'transparent',lineWidth:0,hidden:false,index:0},{text:'非独生 / 忍耐',fillStyle:'#ec4899',strokeStyle:'transparent',lineWidth:0,hidden:false,index:1}];}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.raw}}}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8'}}}}});
 
 // Analysis section charts (数据分析与发现右侧图表)
-new Chart(document.getElementById('analysisChart1'),{type:'bar',data:{labels:['周均焦虑天数','周均被吵醒次数','月均冲突次数','选"忍耐"比例(%)'],datasets:[{data:[2.68,2.77,0.63,50.0],backgroundColor:['#818cf8','#f59e0b','#ef4444','#ec4899']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){const units=['天/周','次/周','次/月','%'][c.dataIndex];return c.raw+units}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:12}}}}}});
+new Chart(document.getElementById('analysisChart1'),{type:'bar',data:{labels:['周均焦虑天数','周均被吵醒次数','月均冲突次数'],datasets:[{data:[2.68,2.77,0.63],backgroundColor:['#818cf8','#f59e0b','#ef4444']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){const units=['天/周','次/周','次/月'][c.dataIndex];return c.raw+units}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:12}}}}}});
 
 new Chart(document.getElementById('analysisChart2'),{type:'bar',data:{labels:['想过调宿','关系"一般"','卫生较好','每周游戏≥4次','完全不接受吸烟'],datasets:[{data:[60.9,57.3,74.5,42.7,74.5],backgroundColor:['#f97316','#f59e0b','#10b981','#818cf8','#ef4444']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw+'%'}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},max:100},y:{ticks:{color:'#94a3b8',font:{size:12}}}}}});
 
 new Chart(document.getElementById('analysisChart3'),{type:'bar',data:{labels:['作息规律匹配','安静学习环境','过敏/健康需求','宗教/饮食需求','无特殊需求'],datasets:[{data:[77.3,66.4,29.1,13.6,10.0],backgroundColor:['#06b6d4','#818cf8','#f59e0b','#ec4899','#334155']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw+'%'}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},max:100},y:{ticks:{color:'#94a3b8',font:{size:12}}}}}});
 
 new Chart(document.getElementById('analysisChart4'),{type:'doughnut',data:{labels:['改善硬件设施','优化管理制度','提升后勤服务','心理支持/调解','加强文化建设'],datasets:[{data:[36,24,17,12,7],backgroundColor:['#818cf8','#06b6d4','#10b981','#f59e0b','#ec4899']}]},options:{...opt,plugins:{legend:pctLegend(110),tooltip:{callbacks:{label:function(c){const p=(c.raw/110*100).toFixed(1);return c.label+': '+c.raw+'人 ('+p+'%)'}}}}}});
+// Wellbeing prediction charts
+new Chart(document.getElementById('wellbeingCoverChart'),{type:'bar',data:{labels:['L/O作息节律','游戏频率','作息一致性','性别','公平感','噪音敏感度','冲突解决方式','T/M空间秩序','住校经历','独生子女'],datasets:[{data:[5,5,4,3,3,3,2,1,1,1],backgroundColor:['#f87171','#f59e0b','#818cf8','#06b6d4','#10b981','#ec4899','#8b5cf6','#e11d48','#84cc16','#f97316']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return '覆盖 '+c.raw+'/5 个幸福感指标'}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},max:6,title:{display:true,text:'覆盖的幸福感指标数(/5)',color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:12}}}}}});
+
+new Chart(document.getElementById('wellbeingExtremeChart'),{type:'bar',data:{labels:['作息一致性(1-5)','L/O(夜猫=1)','游戏频率(否=2)','冲突方式(忍耐=4)','住校经历(无=2)','性别(女=2)','E/I(社恐=0)','T/M(随性=0)'],datasets:[{label:'低痛苦组',data:[3.51,0.69,1.40,2.31,1.26,1.60,0.31,0.77],backgroundColor:'#10b981'},{label:'高痛苦组',data:[2.40,0.00,1.83,3.17,1.51,1.37,0.55,0.91],backgroundColor:'#ef4444'}]},options:{...opt,indexAxis:'y',plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:12,generateLabels:function(c){return[{text:'低痛苦组(焦虑均值0.7天)',fillStyle:'#10b981',strokeStyle:'transparent',lineWidth:0,hidden:false,index:0},{text:'高痛苦组(焦虑均值5.1天)',fillStyle:'#ef4444',strokeStyle:'transparent',lineWidth:0,hidden:false,index:1}];}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.raw.toFixed(2)}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:11}}}}}});
 </script>
 </body>
 </html>
