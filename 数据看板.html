@@ -101,7 +101,9 @@ canvas{width:100%!important;height:100%!important}
 
 <div class="section-title">📊 数据分析与发现</div>
 
-<div class="grid-2">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+<!-- 左栏：分析卡片 -->
+<div style="display:flex;flex-direction:column;gap:20px;">
 <div class="card"><h3>一、宿舍矛盾现状</h3>
 <div class="insight-box">
 <strong>1. 焦虑情绪普遍但程度可控：</strong>周均焦虑天数2.68天，其中24.5%的学生报告0天焦虑，但13.6%几乎每天焦虑（7天）。呈现"两端分化"——大部分人适应良好，少数人持续困扰。<br><br>
@@ -117,9 +119,6 @@ canvas{width:100%!important;height:100%!important}
 <strong>4. 42.7%每周游戏≥4次，</strong>游戏时段集中在20:00-24:00。吸烟接受度很低（74.5%完全不接受）。
 </div>
 </div>
-</div>
-
-<div class="grid-2">
 <div class="card"><h3>三、分配需求核心发现</h3>
 <div class="insight-box">
 <strong>1. 生活习惯 > 性格三观：</strong>分配因素重要性排名：生活习惯契合（1.93）> 性格三观匹配（2.15）> 兴趣爱好相似（3.01）> 学习目标一致（3.32）> 经济条件相当（3.92）。学生最看重的是<strong>作息与卫生的匹配，而非性格或经济条件</strong>。<br><br>
@@ -134,6 +133,34 @@ canvas{width:100%!important;height:100%!important}
 <strong>3. 二次调节——卫生标准+学习/社交需求标注：</strong>作为分配辅助因子。<br><br>
 <strong>4. 兜底机制——调宿缓冲期：</strong>开学2周内可无理由申请调换，防止"忍耐型不适"累积为长期矛盾。<br><br>
 <strong>5. 硬件优先：</strong>学生首选改善方向为硬件设施（32.7%）和管理制度优化（21.8%）。
+</div>
+</div>
+</div>
+<!-- 右栏：对应图表 -->
+<div style="display:flex;flex-direction:column;gap:20px;">
+<div class="card"><h3>「矛盾现状」核心指标对比</h3>
+<div class="chart-wrap" style="height:260px"><canvas id="analysisChart1"></canvas></div>
+<div class="insight-box" style="margin-top:8px;font-size:11px;color:#94a3b8">
+周均被吵醒2.77次 vs 月均冲突0.63次：<strong style="color:#f87171">隐性摩擦是显性冲突的4.4倍</strong>，大量矛盾以"忍耐"消化。
+</div>
+</div>
+<div class="card"><h3>「行为画像」关键行为指标</h3>
+<div class="chart-wrap" style="height:260px"><canvas id="analysisChart2"></canvas></div>
+<div class="insight-box" style="margin-top:8px;font-size:11px;color:#94a3b8">
+仅9.1%从未想过调宿；57.3%关系"一般"——<strong style="color:#f59e0b">多数宿舍处于"可维持但不可享受"状态</strong>。
+</div>
+</div>
+<div class="card"><h3>「分配需求」特殊需求覆盖率</h3>
+<div class="chart-wrap" style="height:260px"><canvas id="analysisChart3"></canvas></div>
+<div class="insight-box" style="margin-top:8px;font-size:11px;color:#94a3b8">
+作息规律（77.3%）和安静环境（66.4%）是<strong style="color:#06b6d4">共识最高的两项需求</strong>，远超宗教饮食等传统分类维度。
+</div>
+</div>
+<div class="card"><h3>「改进方向」学生首选</h3>
+<div class="chart-wrap" style="height:260px"><canvas id="analysisChart4"></canvas></div>
+<div class="insight-box" style="margin-top:8px;font-size:11px;color:#94a3b8">
+硬件设施（32.7%）和管理制度（21.8%）合计占54.5%，<strong style="color:#818cf8">"软件+硬件"双轨改进是共识方向</strong>。
+</div>
 </div>
 </div>
 </div>
@@ -442,6 +469,15 @@ new Chart(document.getElementById('validityChart'),{type:'bar',data:{labels:['D/
 new Chart(document.getElementById('otherFactor1Chart'),{type:'bar',data:{labels:['性别 × 焦虑天数','游戏 × 被吵醒次数','住校经历 × 焦虑天数'],datasets:[{label:'组A',data:[3.37,1.71,2.49],backgroundColor:'#818cf8'},{label:'组B',data:[2.07,3.57,3.03],backgroundColor:'#f59e0b'}]},options:{...opt,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:12,generateLabels:function(c){return[{text:'男 / 游戏者 / 有经历',fillStyle:'#818cf8',strokeStyle:'transparent',lineWidth:0,hidden:false,index:0},{text:'女 / 非游戏者 / 无经历',fillStyle:'#f59e0b',strokeStyle:'transparent',lineWidth:0,hidden:false,index:1}];}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.raw}}}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8'}}}}});
 
 new Chart(document.getElementById('otherFactor2Chart'),{type:'bar',data:{labels:['独生子女 × 舍友关系(1-5)','沟通方式 × 舍友关系(1-5)'],datasets:[{label:'组A',data:[2.62,2.55],backgroundColor:'#06b6d4'},{label:'组B',data:[2.86,2.98],backgroundColor:'#ec4899'}]},options:{...opt,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:12,generateLabels:function(c){return[{text:'独生 / 直接沟通',fillStyle:'#06b6d4',strokeStyle:'transparent',lineWidth:0,hidden:false,index:0},{text:'非独生 / 忍耐',fillStyle:'#ec4899',strokeStyle:'transparent',lineWidth:0,hidden:false,index:1}];}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.raw}}}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8'}}}}});
+
+// Analysis section charts (数据分析与发现右侧图表)
+new Chart(document.getElementById('analysisChart1'),{type:'bar',data:{labels:['周均焦虑天数','周均被吵醒次数','月均冲突次数','选"忍耐"比例(%)'],datasets:[{data:[2.68,2.77,0.63,50.0],backgroundColor:['#818cf8','#f59e0b','#ef4444','#ec4899']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){const units=['天/周','次/周','次/月','%'][c.dataIndex];return c.raw+units}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:12}}}}}});
+
+new Chart(document.getElementById('analysisChart2'),{type:'bar',data:{labels:['想过调宿','关系"一般"','卫生较好','每周游戏≥4次','完全不接受吸烟'],datasets:[{data:[60.9,57.3,74.5,42.7,74.5],backgroundColor:['#f97316','#f59e0b','#10b981','#818cf8','#ef4444']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw+'%'}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},max:100},y:{ticks:{color:'#94a3b8',font:{size:12}}}}}});
+
+new Chart(document.getElementById('analysisChart3'),{type:'bar',data:{labels:['作息规律匹配','安静学习环境','过敏/健康需求','宗教/饮食需求','无特殊需求'],datasets:[{data:[77.3,66.4,29.1,13.6,10.0],backgroundColor:['#06b6d4','#818cf8','#f59e0b','#ec4899','#334155']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw+'%'}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},max:100},y:{ticks:{color:'#94a3b8',font:{size:12}}}}}});
+
+new Chart(document.getElementById('analysisChart4'),{type:'doughnut',data:{labels:['改善硬件设施','优化管理制度','提升后勤服务','心理支持/调解','加强文化建设'],datasets:[{data:[36,24,17,12,7],backgroundColor:['#818cf8','#06b6d4','#10b981','#f59e0b','#ec4899']}]},options:{...opt,plugins:{legend:pctLegend(110),tooltip:{callbacks:{label:function(c){const p=(c.raw/110*100).toFixed(1);return c.label+': '+c.raw+'人 ('+p+'%)'}}}}}});
 </script>
 </body>
 </html>
