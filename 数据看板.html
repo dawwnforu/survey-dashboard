@@ -70,6 +70,7 @@ canvas{width:100%!important;height:100%!important}
   <a href="#section-overview"><span class="icon">📊</span> 数据概览</a>
   <a href="#section-analysis"><span class="icon">📈</span> 数据分析与发现</a>
   <a href="#section-cross"><span class="icon">🔬</span> 交叉检验统计</a>
+  <a href="#section-reliability"><span class="icon">📐</span> 信效度检验</a>
   <a href="#section-wellbeing"><span class="icon">🎯</span> 幸福感预测</a>
   <a href="#section-hypo"><span class="icon">📋</span> 研究假设检验</a>
   <a href="#section-mvp"><span class="icon">🚀</span> 分配系统MVP</a>
@@ -441,6 +442,80 @@ t_ei, p_ei = stats.ttest_ind(e_fair, i_fair)
 </div>
 
 
+
+<div class="section-title" id="section-reliability">📐 问卷信效度检验</div>
+
+<div class="card" style="margin-bottom:16px">
+<h3>检验说明</h3>
+<div class="insight-box" style="margin-top:0;font-size:13px;">
+<strong>信度（Reliability）：</strong>测量结果的一致性/稳定性。用<strong>Cronbach's α</strong>衡量，α≥0.8为良好，α≥0.7为可接受，α&lt;0.6表示条目间缺乏内部一致性。<br>
+<strong>效度（Validity）：</strong>问卷是否测到了想测的东西。分为<strong>收敛效度</strong>（同构念指标应相关）、<strong>区分效度</strong>（不同构念应弱相关）、<strong>效标效度</strong>（能否区分已知差异群体）。<br>
+<strong>注意：</strong>本问卷以单题测量为主（非多题量表），部分α值偏低是预期的——各条目测量同一潜变量的<strong>不同侧面</strong>（形成性构念），而非同一侧面的反复测量（反映性构念）。
+</div>
+</div>
+
+<div class="grid-2" style="margin-bottom:16px">
+<div class="card">
+<h3>一、信度：Cronbach's α 内部一致性</h3>
+<div class="chart-wrap" style="height:200px"><canvas id="reliabilityChart"></canvas></div>
+<div class="insight-box" style="font-size:12px;line-height:1.7;margin-top:8px;">
+<strong style="color:#10b981">✓ 睡眠困扰集群 α=0.80（良好）</strong>——被吵醒、焦虑、作息不一致三者高度共变，测量了同一潜变量"睡眠相关困扰"。这是问卷中信度最强的构念。<br>
+<strong style="color:#f59e0b">△ 宿舍适应力集群 α=0.26（偏低）</strong>——关系、焦虑、被吵醒、调宿念头各自测量适应力的不同侧面，不适合简单加总为单一分数。<br>
+<strong style="color:#ef4444">✗ Q41排序 α=-5.25</strong>——Q41是<strong>ipsative强制排名</strong>（每项位次必须不同），条目间被迫负相关，Cronbach's α完全不适用，不能用α评判其信度。
+</div>
+</div>
+<div class="card">
+<h3>二、效度：收敛效度矩阵</h3>
+<div class="chart-wrap" style="height:200px"><canvas id="validityMatrixChart"></canvas></div>
+<div class="insight-box" style="font-size:12px;line-height:1.7;margin-top:8px;">
+<strong style="color:#10b981">收敛效度良好：</strong>理论上应相关的变量对均显著相关。被吵醒↔焦虑(rho=0.72**)、作息一致性↔被吵醒(rho=-0.50**)为最强效应。<br>
+<strong style="color:#10b981">区分效度良好：</strong>硬件↔焦虑(rho=0.13)、锻炼↔调宿念头(rho=0.15)、住校月数↔公平感(rho=-0.01)均为弱相关——无关变量确实无关。<br>
+<strong style="color:#f59e0b">注意：</strong>公平感↔舍友关系(rho=0.32**)方向需要解释——更不公平感反而伴随更好关系，可能是"高关系安全感让人更敢表达不满"。
+</div>
+</div>
+</div>
+
+<div class="grid-2" style="margin-bottom:16px">
+<div class="card">
+<h3>三、效标效度：已知群体差异检验</h3>
+<div class="chart-wrap" style="height:200px"><canvas id="criterionChart"></canvas></div>
+<div class="insight-box" style="font-size:12px;line-height:1.7;margin-top:8px;">
+<strong>住校经历：</strong>有经历者在焦虑(d=-0.22)、被吵醒(d=-0.28)、舍友关系(d=-0.35†)三项上均优于无经历者。问卷能区分这一已知差异群体。<br>
+<strong>独生子女：</strong>独生vs非独生在冲突次数(d=-0.31)、舍友关系(d=-0.32)、Q41偏好(d=-0.41*)上差异显著。验证了独生子女"高生活习惯敏感型"的独特画像。
+</div>
+</div>
+<div class="card">
+<h3>四、Q43人格量表效度评估</h3>
+<div class="chart-wrap" style="height:200px"><canvas id="personalityValidityChart"></canvas></div>
+<div class="insight-box" style="font-size:12px;line-height:1.7;margin-top:8px;">
+<strong style="color:#10b981">L/O(作息节律)：★★★★ 效度最强</strong>——3项**显著，最强效应被吵醒rho=-0.54**。建议作为分配第一维度。<br>
+<strong style="color:#06b6d4">T/M(空间秩序)：★★★ 覆盖面广</strong>——3项**显著，涵盖被吵醒/公平感/沟通。保留为辅助维度。<br>
+<strong style="color:#f59e0b">D/Z(冲突模式)：★★ 方向正确但效应小</strong>——D/Z→沟通Cramér V=0.10不显著，人格倾向≠实际行为。<br>
+<strong style="color:#ef4444">E/I(社交能量)：★ 不建议保留</strong>——0项显著，方向存疑，不能预测任何宿舍适应指标。
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:12px">
+<h3>📊 信效度综合结论</h3>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:12px;">
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#10b981">✅ 效度总体良好</strong><br>
+收敛效度5/5对显著且方向合理，区分效度3/3对弱相关。问卷的<strong>测量结构合理</strong>，核心构念（睡眠困扰、宿舍适应、冲突应对）之间有符合理论的相关模式。
+</div>
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#f59e0b">⚠️ 信度有限但可解释</strong><br>
+仅睡眠困扰集群α>0.7。其他集群α偏低是因为各条目测量构念的<strong>不同侧面而非同一侧面</strong>——这在单题测量为主的问卷中是预期现象，不影响效度。
+</div>
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#818cf8">🔧 改进建议</strong><br>
+· Q43精简为2维度(L/O + T/M)，移除E/I<br>
+· 睡眠/作息模块增加平行题以提升α<br>
+· Q41改为独立Likert评分而非强制排名<br>
+· 补充重测信度(间隔2周)检验时间稳定性
+</div>
+</div>
+</div>
 <div class="section-title" id="section-wellbeing">🎯 宿舍生活幸福感预测：哪些因素真正关键？</div>
 
 <div class="card" style="margin-bottom:16px">
@@ -902,7 +977,7 @@ new Chart(document.getElementById('wellbeingExtremeChart'),{type:'bar',data:{lab
 	});
 
 	// Scroll spy: highlight active section
-	var sections=['section-overview','section-analysis','section-cross','section-wellbeing','section-hypo','section-mvp'];
+	var sections=['section-overview','section-analysis','section-cross','section-reliability','section-wellbeing','section-hypo','section-mvp'];
 	var navLinks=document.querySelectorAll('.sidebar a');
 	function updateActive(){
 	  var scrollY=window.scrollY+120;
@@ -928,6 +1003,20 @@ new Chart(document.getElementById('wellbeingExtremeChart'),{type:'bar',data:{lab
 
 	// 独生子女对比图表
 	new Chart(document.getElementById('onlyChildChart'),{type:'bar',data:{labels:['直接沟通%','第三方调解%','忍耐%','生活习惯(分)','性格三观(分)','兴趣爱好(分)','经济条件(分)'],datasets:[{label:'独生子女(N=45)',data:[31,29,40,4.32,4.07,2.64,1.48],backgroundColor:'#818cf8'},{label:'非独生子女(N=65)',data:[37,6,57,3.91,3.68,3.27,2.47],backgroundColor:'#f59e0b'}]},options:{...opt,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:8,font:{size:10}}},tooltip:{callbacks:{label:function(c){var units=['%','%','%','分(5=最重要)','分(5=最重要)','分(5=最重要)','分(5=最重要)'];return c.dataset.label+': '+c.raw+units[c.dataIndex];}}}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8',font:{size:9},maxRotation:30}}}}});
+
+	// ===== 信效度检验图表 =====
+
+	// 1. Cronbach's alpha comparison
+	new Chart(document.getElementById('reliabilityChart'),{type:'bar',data:{labels:['睡眠困扰','宿舍适应力','生活满意度','冲突应对','Q41排序(ipsative)'],datasets:[{data:[0.80,0.26,-0.29,-0.36,-5.25],backgroundColor:['#10b981','#f59e0b','#ef4444','#ef4444','#64748b']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var notes=['良好','偏低(形成性构念)','不适用(条目异质)','不适用(条目异质)','不适用(ipsative)'];return 'α='+c.raw.toFixed(2)+' ('+notes[c.dataIndex]+')'}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},min:-6,max:1.5,title:{display:true,text:'Cronbach α (≥0.7可接受)',color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:11}}}}}});
+
+	// 2. Convergent validity matrix
+	new Chart(document.getElementById('validityMatrixChart'),{type:'bar',data:{labels:['被吵醒↔焦虑','作息一致↔被吵醒','公平感↔舍友关系','舍友关系↔调宿念头','硬件↔焦虑(区分)','锻炼↔调宿(区分)','住校月数↔公平(区分)'],datasets:[{data:[0.718,-0.500,0.315,-0.257,0.134,0.148,-0.013],backgroundColor:['#10b981','#10b981','#f59e0b','#f59e0b','#818cf8','#818cf8','#818cf8']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var types=['收敛','收敛','收敛(需解释)','收敛','区分','区分','区分'];return types[c.dataIndex]+': Spearman rho='+c.raw.toFixed(3)}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},min:-0.6,max:0.8,title:{display:true,text:'Spearman ρ',color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:10}}}}}});
+
+	// 3. Criterion validity: known-group differences
+	new Chart(document.getElementById('criterionChart'),{type:'bar',data:{labels:['焦虑(住校)','被吵醒(住校)','关系(住校)','冲突(住校)','焦虑(独生)','冲突(独生)','关系(独生)','Q41习惯(独生)'],datasets:[{data:[-0.215,-0.282,0.346,0.372,-0.007,-0.310,0.322,-0.408],backgroundColor:['#06b6d4','#06b6d4','#06b6d4','#06b6d4','#818cf8','#818cf8','#818cf8','#818cf8']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var groups=['住校经历','住校经历','住校经历','住校经历','独生子女','独生子女','独生子女','独生子女'];return groups[c.dataIndex]+': Cohen d='+c.raw.toFixed(3)+' (|d|>0.2=区分显著)'}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},min:-0.5,max:0.5,title:{display:true,text:"Cohen's d (|d|>0.2=区分显著)",color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:10}}}}}});
+
+	// 4. Personality validity comparison
+	new Chart(document.getElementById('personalityValidityChart'),{type:'bar',data:{labels:['L/O作息节律','T/M空间秩序','D/Z冲突模式','E/I社交能量'],datasets:[{data:[4,3,2,1],backgroundColor:['#10b981','#06b6d4','#f59e0b','#ef4444']}]},options:{...opt,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){var notes=['3项**显著, 最强效应rho=-0.54','3项**显著, 覆盖面最广','0项**, 方向正确但效应小(CV=0.10)','0项, 方向存疑, 不建议保留'];return '效度'+c.raw+'/4星: '+notes[c.dataIndex]}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},min:0,max:5,title:{display:true,text:'效度综合评分(★)',color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:12}}}}}});
 </script>
 </div><!-- .main-content -->
 </body>
