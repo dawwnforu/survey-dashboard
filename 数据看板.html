@@ -138,9 +138,18 @@ canvas{width:100%!important;height:100%!important}
 </div>
 </div>
 
+
+<div class="section-title">🔬 交叉检验统计分析</div>
+
+<div class="card" style="margin-bottom:20px">
+<h3>检验说明</h3>
+<div class="insight-box" style="margin-top:0">
+基于110份样本（含原始57份 + 保留分布的Bootstrap扩充53份），使用<strong>Spearman秩相关、卡方独立性检验、Fisher精确检验、Mann-Whitney U检验、独立样本t检验</strong>等方法，对自研人格量表效度及其他可能影响宿舍适应的因素进行交叉验证。人格量表部分仅N=41（有Q43作答的原始样本），其他因素使用全样本。<br><br>
+<strong>效应量解读：</strong>|rho|≥0.3 中等相关，Cramér V≥0.2 中等关联，Cohen d≥0.5 中等效应。p&lt;0.05 为统计学显著（标记**），p&lt;0.10 为边缘显著（标记†）。
+</div>
 </div>
 
-<div class="section-title">🧬 自研人格量表效度交叉检验（N=41，有Q43作答者）</div>
+<div class="section-title" style="font-size:16px;margin:20px 0 12px;color:#a5b4fc">—— 宿舍人格因素（Q43人格量表效度，N=41）</div>
 
 <!-- Dimension explanations -->
 <div class="card" style="margin-bottom:16px">
@@ -302,6 +311,49 @@ t_ei, p_ei = stats.ttest_ind(e_fair, i_fair)
 </div>
 </div>
 
+<div class="section-title" style="font-size:16px;margin:20px 0 12px;color:#a5b4fc">—— 其他因素（全样本 N=110）</div>
+
+<div class="grid-2" style="margin-bottom:16px">
+<div class="card">
+<h3>性别 · 游戏 · 住校经历 × 焦虑与被吵醒</h3>
+<div class="chart-wrap" style="height:200px"><canvas id="otherFactor1Chart"></canvas></div>
+<div class="insight-box" style="font-size:12px;line-height:1.7;margin-top:10px;">
+<strong>性别差异：</strong>男生周均焦虑3.37天 vs 女生2.07天。男生焦虑水平显著更高——可能原因：男生在宿舍矛盾中更倾向"不表达"，压抑反而加剧焦虑。<br>
+<strong>游戏因素：</strong>每周游戏≥4次者周均被吵醒1.71次 vs 非游戏者3.57次。游戏者被吵醒<strong>更少</strong>——并非游戏更安静，而是游戏者自身入睡更晚、对噪音容忍更高。<br>
+<strong>住校经历：</strong>有住校经历者焦虑2.49天 vs 无经历者3.03天。有过住宿经验的学生<strong>适应更好</strong>，说明预适应训练有价值。
+</div>
+</div>
+<div class="card">
+<h3>独生 · 沟通方式 · 睡眠 × 舍友关系</h3>
+<div class="chart-wrap" style="height:200px"><canvas id="otherFactor2Chart"></canvas></div>
+<div class="insight-box" style="font-size:12px;line-height:1.7;margin-top:10px;">
+<strong>独生子女：</strong>独生舍友关系均分2.62 vs 非独生2.86（1-5分，越高越好）。独生子女关系评价<strong>略低</strong>，可能因缺乏共享空间经验。<br>
+<strong>沟通方式：</strong>直接沟通者关系2.55 vs 忍耐者2.98。直接沟通反而关系评分更低——可能因果倒置：关系差才需要沟通，而非沟通导致关系差。<br>
+<strong>睡眠质量：</strong>睡眠自评与焦虑天数呈负相关。睡眠差的群体焦虑更高——改善宿舍睡眠环境可望间接降低焦虑。
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+<h3>🔍 其他因素综合解读</h3>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:12px;">
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#818cf8">1. 作息是贯穿所有因素的核心变量</strong><br>
+无论从人格（L/O rho=-0.539**）、游戏习惯（1.71 vs 3.57）、住校经历（2.49 vs 3.03）哪个角度切入，作息协调性始终是预测宿舍适应力的最强指标。这进一步验证了"作息聚类分配"作为核心策略的合理性。
+</div>
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#06b6d4">2. 直接沟通≠关系好（因果方向需注意）</strong><br>
+直接沟通者关系评分反而更低（2.55 vs 2.98），但这更可能是"冲突后才沟通"而非"沟通促进关系"。D/Z维度（直球/佛系）在人格量表中效度排行第三（Cramér V=0.21），方向一致但未达显著——需更大样本验证因果关系。
+</div>
+<div class="insight-box" style="margin-top:0;">
+<strong style="color:#f59e0b">3. 预适应与筛选机制</strong><br>
+有住校经历者焦虑更低（2.49 vs 3.03），独生子女关系评价略低（2.62 vs 2.86），性别间焦虑差异显著（男3.37 vs 女2.07）。建议在宿舍分配时标注"作息偏好"+"住校经验"，并在入学前提供作息匹配自测工具。
+</div>
+</div>
+</div>
+
+</div>
+
 <div class="footer">
 不吃压力之组 × 社会调查实践 —— 大学生宿舍矛盾现状及科学化宿舍分配路径研究 | 数据仅供研究参考
 </div>
@@ -323,6 +375,13 @@ const pctPlugin={
       const data=chart.data.datasets[meta.index].data;
       const sum=data.reduce((a,b)=>a+b,0);
       if(meta.type==='bar'){
+        ctx.fillStyle='#e2e8f0';ctx.font='bold 11px -apple-system,sans-serif';ctx.textAlign='center';
+        meta.data.forEach((bar,i)=>{
+          if(data[i]===0)return;
+          const pct=(data[i]/totalN*100).toFixed(1)+'%';
+          ctx.fillText(pct,bar.x,bar.y-8);
+        });
+      }
     });
   }
 };
@@ -378,6 +437,11 @@ new Chart(document.getElementById('personalityChart'),{type:'bar',data:{labels:p
 new Chart(document.getElementById('improveChart'),{type:'bar',data:{labels:['改善硬件设施','优化管理制度','提升后勤服务','心理支持/调解','加强文化建设'],datasets:[{data:[36,24,17,12,7],backgroundColor:['#818cf8','#06b6d4','#10b981','#f59e0b','#ec4899']}]},options:{...opt,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8'}}}}});
 // Validity ranking chart
 new Chart(document.getElementById('validityChart'),{type:'bar',data:{labels:['D/Z ⚔️\n冲突模式','T/M 🧹\n空间秩序','L/O 🌙\n作息节律','E/I 🧬\n社交能量'],datasets:[{data:[3,2,1,0],backgroundColor:['#10b981','#06b6d4','#f59e0b','#ef4444']}]},options:{...opt,indexAxis:'y',plugins:{...opt.plugins,pctLabels:{enabled:false},legend:{display:false},tooltip:{callbacks:{label:function(c){return ['最佳: 中等效应量(Cramér V=0.21), 方向正确','良好: 中等效应量(Cohen d=0.38), 多项Spearman显著','中等: 小效应量(Cramér V=0.16), 方向正确, 反向相关显著','较弱: 效应量小(d=-0.27), 方向存疑'][c.dataIndex]}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},min:0,max:4,title:{display:true,text:'效度得分',color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:13}}}}}});
+
+// Other factors charts
+new Chart(document.getElementById('otherFactor1Chart'),{type:'bar',data:{labels:['性别 × 焦虑天数','游戏 × 被吵醒次数','住校经历 × 焦虑天数'],datasets:[{label:'组A',data:[3.37,1.71,2.49],backgroundColor:'#818cf8'},{label:'组B',data:[2.07,3.57,3.03],backgroundColor:'#f59e0b'}]},options:{...opt,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:12,generateLabels:function(c){return[{text:'男 / 游戏者 / 有经历',fillStyle:'#818cf8',strokeStyle:'transparent',lineWidth:0,hidden:false,index:0},{text:'女 / 非游戏者 / 无经历',fillStyle:'#f59e0b',strokeStyle:'transparent',lineWidth:0,hidden:false,index:1}];}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.raw}}}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8'}}}}});
+
+new Chart(document.getElementById('otherFactor2Chart'),{type:'bar',data:{labels:['独生子女 × 舍友关系(1-5)','沟通方式 × 舍友关系(1-5)'],datasets:[{label:'组A',data:[2.62,2.55],backgroundColor:'#06b6d4'},{label:'组B',data:[2.86,2.98],backgroundColor:'#ec4899'}]},options:{...opt,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:12,generateLabels:function(c){return[{text:'独生 / 直接沟通',fillStyle:'#06b6d4',strokeStyle:'transparent',lineWidth:0,hidden:false,index:0},{text:'非独生 / 忍耐',fillStyle:'#ec4899',strokeStyle:'transparent',lineWidth:0,hidden:false,index:1}];}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.raw}}}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8'}}}}});
 </script>
 </body>
 </html>
