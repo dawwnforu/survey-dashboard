@@ -171,6 +171,15 @@ canvas{width:100%!important;height:100%!important}
 <strong>5. 硬件优先：</strong>学生首选改善方向为硬件设施（32.7%）和管理制度优化（21.8%）。
 </div>
 </div>
+
+<div class="card"><h3>五、独生子女：独特的冲突处理模式</h3>
+<div class="insight-box">
+<strong>1. 冲突处理方式差异显著：</strong>独生子女更倾向<strong style="color:#f59e0b">第三方调解（29% vs 6%）</strong>——是非独生的近5倍。非独生则更倾向"先忍耐"（57% vs 40%）。从小有兄弟姐妹的人习惯了直接磨合，独生子女更依赖外部调解机制。<br><br>
+<strong>2. 独生更重视生活习惯匹配（p=0.043**）：</strong>Q41排序中独生子女将"生活习惯契合"排在更前（位次1.68 vs 2.09, d=0.41*）。缺乏共享空间经验导致对作息/卫生匹配更焦虑。但<strong style="color:#06b6d4">非独生更在乎兴趣爱好和经济条件</strong>（分别p=0.016**和p=0.011**）——有兄弟姐妹的人已经习惯了"习惯可以磨合"，更看重能不能玩到一起。<br><br>
+<strong>3. 定量差异未达显著但模式一致：</strong>独生冲突0.33 vs 非独生0.85（d=0.31）、独生关系2.62 vs 非独生2.86（d=0.32）——独生矛盾少但满意度低，整体效应量中等但N=110下未达p&lt;0.05。建议后续研究扩大样本验证。<br><br>
+<strong>4. 分配系统启示：</strong>独生子女应标注为"高生活习惯敏感型"，优先匹配作息/卫生相似度高的舍友。他们不擅长也不愿意直接面对冲突，提供第三方调解渠道可能更有效。
+</div>
+</div>
 </div>
 <!-- 右栏：对应图表 -->
 <div style="display:flex;flex-direction:column;gap:20px;">
@@ -196,6 +205,12 @@ canvas{width:100%!important;height:100%!important}
 <div class="chart-wrap" style="height:260px"><canvas id="analysisChart4"></canvas></div>
 <div class="insight-box" style="margin-top:8px;font-size:11px;color:#94a3b8">
 硬件设施（32.7%）和管理制度（21.8%）合计占54.5%，<strong style="color:#818cf8">"软件+硬件"双轨改进是共识方向</strong>。
+</div>
+</div>
+<div class="card"><h3>「独生子女」冲突方式 & Q41偏好对比</h3>
+<div class="chart-wrap" style="height:260px"><canvas id="onlyChildChart"></canvas></div>
+<div class="insight-box" style="margin-top:8px;font-size:11px;color:#94a3b8;">
+独生子女找<strong style="color:#f59e0b">第三方调解的比例是非独生的5倍</strong>（29% vs 6%）。独生更重视生活习惯(p=0.043**)，非独生更重视兴趣爱好(p=0.016**)和经济条件(p=0.011**)。
 </div>
 </div>
 </div>
@@ -475,8 +490,8 @@ t_ei, p_ei = stats.ttest_ind(e_fair, i_fair)
 <div class="insight-box" style="margin-top:0;">
 <strong style="color:#ef4444">❌ 建议降权/移除（预测力★★☆☆☆及以下）</strong><br>
 <strong>E/I社交能量</strong> — 不预测任何幸福感指标（d均<0.3），不应作为分配因子<br>
-<strong>独生子女</strong> — 仅预测调宿念头(d=0.35†)，效应量小<br>
-<strong>经济条件/地域文化</strong> — 与幸福感指标均无显著关联<br>
+<strong>独生子女</strong> — 冲突处理模式独特(第三方调解29% vs 6%)，详见「数据分析与发现」第五部分<br>
+<strong>经济条件/地域文化</strong> — 问卷未采集客观经济/地域文化变量，缺乏检验依据<br>
 <strong>锻炼频率</strong> — 效应量小，可移除
 </div>
 </div>
@@ -910,6 +925,9 @@ new Chart(document.getElementById('wellbeingExtremeChart'),{type:'bar',data:{lab
 	  clone.style.left='100%';
 	  el.parentNode.appendChild(clone);
 	});
+
+	// 独生子女对比图表
+	new Chart(document.getElementById('onlyChildChart'),{type:'bar',data:{labels:['直接沟通%','第三方调解%','忍耐%','生活习惯位次','性格三观位次','兴趣爱好位次','经济条件位次'],datasets:[{label:'独生子女(N=45)',data:[31,29,40,1.68,1.93,3.36,4.52],backgroundColor:'#818cf8'},{label:'非独生子女(N=65)',data:[37,6,57,2.09,2.32,2.73,3.53],backgroundColor:'#f59e0b'}]},options:{...opt,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:8,font:{size:10}}},tooltip:{callbacks:{label:function(c){var units=['%','%','%','位次','位次','位次','位次'];return c.dataset.label+': '+c.raw+units[c.dataIndex];}}}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8',font:{size:9},maxRotation:30}}}}});
 </script>
 </div><!-- .main-content -->
 </body>
