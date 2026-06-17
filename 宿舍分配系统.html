@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宿舍智能分配系统 · SmartDorm</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.header{background:linear-gradient(135deg,#1e293b,#0f172a);border-bottom:1px solid #334155;padding:20px 32px;text-align:center}
+.header h1{font-size:24px;font-weight:800;letter-spacing:2px}
+.header h1 span{color:#818cf8}
+.header p{color:#94a3b8;margin-top:6px;font-size:13px}
+
+/* Tab Navigation */
+.tab-nav{display:flex;justify-content:center;gap:4px;background:#1a2332;border-bottom:1px solid #334155;padding:0;position:sticky;top:0;z-index:100}
+.tab-btn{padding:16px 40px;background:none;border:none;color:#94a3b8;font-size:15px;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;font-family:inherit;display:flex;align-items:center;gap:8px}
+.tab-btn:hover{color:#e2e8f0;background:rgba(129,140,248,.05)}
+.tab-btn.active{color:#818cf8;border-bottom-color:#818cf8;background:rgba(129,140,248,.08)}
+.tab-btn .icon{font-size:18px}
+.tab-content{display:none;max-width:1200px;margin:0 auto;padding:24px}
+.tab-content.active{display:block}
+
+/* Cards */
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:20px}
+.card h3{font-size:16px;color:#cbd5e1;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card h3::before{content:'';width:4px;height:18px;background:#818cf8;border-radius:2px}
+.insight-box{background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.2);border-radius:10px;padding:16px;margin-top:12px;font-size:13px;line-height:1.8;color:#cbd5e1}
+.insight-box strong{color:#a5b4fc}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+
+/* Form Elements */
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:14px;color:#cbd5e1;margin-bottom:6px;font-weight:600}
+.form-label .req{color:#ec4899}
+.form-hint{font-size:11px;color:#64748b;margin-top:2px}
+input[type="text"],input[type="number"],input[type="time"],select,textarea{width:100%;padding:10px 14px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;font-size:14px;font-family:inherit;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#818cf8}
+textarea{resize:vertical;min-height:80px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+
+.likert-group{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.likert-opt{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.likert-opt input{display:none}
+.likert-opt .dot{width:36px;height:36px;border-radius:50%;border:2px solid #334155;background:#0f172a;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:12px;color:#94a3b8}
+.likert-opt input:checked + .dot{border-color:#818cf8;background:rgba(129,140,248,.2);color:#818cf8;box-shadow:0 0 12px rgba(129,140,248,.3)}
+.likert-opt .lbl{font-size:10px;color:#64748b;text-align:center;max-width:50px}
+
+.checkbox-group,.radio-group{display:flex;flex-wrap:wrap;gap:10px}
+.chip{position:relative;cursor:pointer}
+.chip input{display:none}
+.chip .tag{padding:8px 16px;border:1px solid #334155;border-radius:20px;font-size:13px;color:#94a3b8;background:#0f172a;transition:all .2s;display:block}
+.chip input:checked + .tag{border-color:#818cf8;background:rgba(129,140,248,.15);color:#a5b4fc}
+
+.range-wrap{display:flex;align-items:center;gap:12px}
+.range-wrap input[type="range"]{flex:1;accent-color:#818cf8;height:6px}
+.range-val{min-width:40px;text-align:center;font-size:16px;font-weight:700;color:#818cf8}
+
+.btn{padding:12px 28px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-primary{background:linear-gradient(135deg,#818cf8,#6366f1);color:#fff}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(129,140,248,.3)}
+.btn-outline{background:transparent;border:1px solid #334155;color:#94a3b8}
+.btn-outline:hover{border-color:#818cf8;color:#e2e8f0}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.btn-sm{padding:6px 14px;font-size:12px}
+
+/* Progress Bar */
+.progress-bar{height:4px;background:#334155;border-radius:2px;margin-bottom:24px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#818cf8,#06b6d4);border-radius:2px;transition:width .4s ease}
+.progress-text{font-size:12px;color:#94a3b8;margin-bottom:8px}
+
+/* Radar Chart Area */
+.radar-wrap{max-width:500px;margin:0 auto}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.stat-item{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;text-align:center}
+.stat-item .val{font-size:24px;font-weight:900;background:linear-gradient(135deg,#818cf8,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-item .lbl{font-size:11px;color:#94a3b8;margin-top:2px}
+
+/* Matching Results */
+.match-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
+.match-table th{background:#0f172a;padding:10px 12px;text-align:left;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #334155}
+.match-table td{padding:10px 12px;border-bottom:1px solid #1e293b}
+.match-table tr:hover td{background:rgba(129,140,248,.05)}
+.match-badge{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700}
+.match-high{background:rgba(16,185,129,.15);color:#10b981}
+.match-mid{background:rgba(245,158,11,.15);color:#f59e0b}
+.match-low{background:rgba(239,68,68,.15);color:#ef4444}
+
+/* Score Matrix Heatmap */
+.heatmap-cell{width:28px;height:28px;border-radius:4px;display:inline-block;margin:1px;font-size:8px;text-align:center;line-height:28px;color:transparent;transition:all .2s}
+.heatmap-cell:hover{color:#fff;transform:scale(1.3);z-index:10;position:relative}
+
+.rank-chip .tag{transition:all .2s}
+.rank-chip.ranked .tag{border-color:#f59e0b;background:rgba(245,158,11,.15);color:#fbbf24;position:relative}
+.rank-chip.ranked .tag::before{content:attr(data-rank);display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#f59e0b;color:#0f172a;font-size:11px;font-weight:900;margin-right:6px}
+.rank-chip{position:relative;cursor:pointer}
+.rank-chip input{display:none}
+#rankOrder span{display:inline-block;margin-right:14px;padding:4px 10px;background:rgba(129,140,248,.1);border-radius:6px;font-size:12px}
+.toggle-switch{position:relative;display:inline-block;width:48px;height:26px}
+.toggle-switch input{display:none}
+.toggle-slider{position:absolute;top:0;left:0;right:0;bottom:0;background:#334155;border-radius:26px;transition:.3s;cursor:pointer}
+.toggle-slider::before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#94a3b8;border-radius:50%;transition:.3s}
+.toggle-switch input:checked+.toggle-slider{background:#818cf8}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(22px);background:#fff}
+
+.alert{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:14px;font-size:13px;line-height:1.7;color:#fbbf24}
+.alert-success{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.25);color:#10b981}
+.alert-danger{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.25);color:#ef4444}
+
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.tab-btn{padding:12px 18px;font-size:13px}.radar-wrap{max-width:100%}}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>🏘️ SmartDorm · <span>宿舍智能分配系统</span></h1>
+<p>基于110份问卷实证研究 | 作息·人格·行为多维度匹配 | 公平优化算法</p>
+</div>
+
+<div class="tab-nav">
+<button class="tab-btn active" onclick="switchTab(0)" id="tabBtn0">
+  <span class="icon">📝</span> 填写问卷
+</button>
+<button class="tab-btn" onclick="switchTab(1)" id="tabBtn1">
+  <span class="icon">🎯</span> 人格雷达图
+</button>
+<button class="tab-btn" onclick="switchTab(2)" id="tabBtn2">
+  <span class="icon">🔮</span> 智能匹配
+</button>
+</div>
+
+<!-- ==================== TAB 0: 问卷 ==================== -->
+<div class="tab-content active" id="tab0">
+<div class="card">
+<h3>📋 宿舍分配意向问卷（v4 · 完整版）</h3>
+<div class="insight-box" style="margin-bottom:16px;font-size:12px">
+<strong>🔬 问卷设计说明：</strong>基于N=89实证研究确认的筛选方案（保留~28题），新增<strong>边界感、宿舍驻留时长、精力水平</strong>三个维度。六维雷达图从以下题目中提取计算。含条件跳转逻辑。预计填写时间 <strong>5-8分钟</strong>。
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+<div class="progress-text" id="progressText">进度 0/7 组</div>
+
+<form id="dormForm">
+
+<!-- ====== A. 基本信息 ====== -->
+<div class="card"><h3>A. 基本信息</h3>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 年级</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="grade" value="1" required><span class="tag">大一</span></label>
+    <label class="chip"><input type="radio" name="grade" value="2"><span class="tag">大二</span></label>
+    <label class="chip"><input type="radio" name="grade" value="3"><span class="tag">大三</span></label>
+    <label class="chip"><input type="radio" name="grade" value="4"><span class="tag">大四</span></label>
+    <label class="chip"><input type="radio" name="grade" value="5"><span class="tag">研究生</span></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 性别（性别在焦虑d=-0.39上有效应）</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="gender" value="male" required><span class="tag">男</span></label>
+    <label class="chip"><input type="radio" name="gender" value="female"><span class="tag">女</span></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 生源地（农村生匹配时加权安静与经济兼容性）</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="origin" value="urban" required><span class="tag">🏙️ 城镇</span></label>
+    <label class="chip"><input type="radio" name="origin" value="rural"><span class="tag">🌾 农村</span></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 是否独生子女</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="only_child" value="yes" required onchange="toggleConditional('only_child','yes','siblingGroup',true)"><span class="tag">是</span></label>
+    <label class="chip"><input type="radio" name="only_child" value="no" onchange="toggleConditional('only_child','no','siblingGroup',false)"><span class="tag">否</span></label>
+  </div>
+</div>
+
+<div class="form-group" id="siblingGroup" style="display:none">
+  <div class="form-label">兄弟姐妹相处情况</div>
+  <select name="sibling_harmony" style="width:100%">
+    <option value="3" selected>正常相处，无明显问题</option>
+    <option value="1">经常争吵、关系紧张</option>
+    <option value="2">偶尔有小矛盾、不算亲密</option>
+    <option value="4">比较和睦、经常互相帮助</option>
+    <option value="5">非常亲密、无话不谈、互相支持</option>
+  </select>
+</div>
+</div>
+
+<!-- ====== B. 作息节律 ====== -->
+<div class="card"><h3>B. 作息节律（→ 雷达·晨型度 + 安静度参考）</h3>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 你的自然作息节律是？（L/O维度，宿舍适应最强预测因子 rho=-0.539**）</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="chronotype" value="L" required><span class="tag">🌅 晨鸟型 L<br><small style="color:#64748b">早睡早起，早晨效率高</small></span></label>
+    <label class="chip"><input type="radio" name="chronotype" value="LO"><span class="tag">🌤️ 偏晨型<br><small style="color:#64748b">略偏好早晨</small></span></label>
+    <label class="chip"><input type="radio" name="chronotype" value="OO"><span class="tag">🌆 偏夜型<br><small style="color:#64748b">略偏好夜晚</small></span></label>
+    <label class="chip"><input type="radio" name="chronotype" value="O"><span class="tag">🌙 夜猫型 O<br><small style="color:#64748b">晚睡晚起，深夜效率高</small></span></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 典型入睡时间范围（基于110人实际分布分位数的5级区间）</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="sleep_range" value="A" required><span class="tag">🌙 22:30前<br><small style="color:#64748b">极早睡型（~5%）</small></span></label>
+    <label class="chip"><input type="radio" name="sleep_range" value="B"><span class="tag">🌗 22:30-23:30<br><small style="color:#64748b">早睡型（~35%）</small></span></label>
+    <label class="chip"><input type="radio" name="sleep_range" value="C"><span class="tag">🌖 23:30-24:00<br><small style="color:#64748b">正常型（~30%）</small></span></label>
+    <label class="chip"><input type="radio" name="sleep_range" value="D"><span class="tag">🌒 24:00-1:00<br><small style="color:#64748b">晚睡型（~16%）</small></span></label>
+    <label class="chip"><input type="radio" name="sleep_range" value="E"><span class="tag">🌑 凌晨1:00后<br><small style="color:#64748b">熬夜型（~11%）</small></span></label>
+  </div>
+</div>
+
+<div class="grid-2">
+<div class="form-group">
+  <div class="form-label">典型入睡时间</div>
+  <input type="time" name="bedtime" step="60" style="font-size:16px;text-align:center">
+</div>
+<div class="form-group">
+  <div class="form-label">典型起床时间</div>
+  <input type="time" name="waketime" step="60" style="font-size:16px;text-align:center">
+</div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 入睡时间波动范围（参考手机厂商算法：区间越窄越规律）</div>
+  <div class="form-hint">小米等手机通过检测入睡时间的方差来判断睡眠规律性——比如0:00-1:00之间入睡虽然晚但规律</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="sleep_variance" value="A" required><span class="tag">📐 ±15分钟内<br><small style="color:#64748b">非常规律，几乎固定时间</small></span></label>
+    <label class="chip"><input type="radio" name="sleep_variance" value="B"><span class="tag">📏 ±30分钟内<br><small style="color:#64748b">比较规律，有轻微波动</small></span></label>
+    <label class="chip"><input type="radio" name="sleep_variance" value="C"><span class="tag">📊 ±1小时内<br><small style="color:#64748b">有一定波动，周末可能晚睡</small></span></label>
+    <label class="chip"><input type="radio" name="sleep_variance" value="D"><span class="tag">🌊 ±2小时内<br><small style="color:#64748b">波动较大，作息不太固定</small></span></label>
+    <label class="chip"><input type="radio" name="sleep_variance" value="E"><span class="tag">🎢 ±2小时以上<br><small style="color:#64748b">非常不规律，每天差异很大</small></span></label>
+  </div>
+</div>
+</div>
+
+<!-- ====== C. 噪音行为 ====== -->
+<div class="card"><h3>C. 噪音行为（→ 雷达·安静度）</h3>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 你在宿舍是否进行以下行为？每行勾选对应频率</div>
+  <div style="overflow-x:auto;margin-top:8px">
+  <table style="width:100%;border-collapse:collapse;font-size:12px">
+  <thead><tr style="color:#94a3b8">
+    <th style="text-align:left;padding:6px 8px;border-bottom:1px solid #334155;width:30%">行为</th>
+    <th style="text-align:center;padding:6px 4px;border-bottom:1px solid #334155;width:17%">从不</th>
+    <th style="text-align:center;padding:6px 4px;border-bottom:1px solid #334155;width:17%">偶尔<br><small>月几次</small></th>
+    <th style="text-align:center;padding:6px 4px;border-bottom:1px solid #334155;width:17%">经常<br><small>周几次</small></th>
+    <th style="text-align:center;padding:6px 4px;border-bottom:1px solid #334155;width:17%">每天</th>
+  </tr></thead>
+  <tbody id="noiseMatrix"></tbody>
+  </table>
+  </div>
+</div>
+
+<div class="form-group" id="gameTypeGroup" style="display:none">
+  <div class="form-label">🎮 你主要玩什么类型的游戏？（方便匹配志同道合的舍友，可多选）</div>
+  <div class="checkbox-group">
+    <label class="chip"><input type="checkbox" name="game_type" value="moba"><span class="tag">MOBA（王者/LOL）</span></label>
+    <label class="chip"><input type="checkbox" name="game_type" value="fps"><span class="tag">FPS（CS/Valorant/吃鸡）</span></label>
+    <label class="chip"><input type="checkbox" name="game_type" value="rpg"><span class="tag">RPG/开放世界（原神/塞尔达）</span></label>
+    <label class="chip"><input type="checkbox" name="game_type" value="strategy"><span class="tag">策略/自走棋</span></label>
+    <label class="chip"><input type="checkbox" name="game_type" value="casual"><span class="tag">休闲（消消乐/斗地主）</span></label>
+    <label class="chip"><input type="checkbox" name="game_type" value="rhythm"><span class="tag">音游</span></label>
+    <label class="chip"><input type="checkbox" name="game_type" value="other_game"><span class="tag">其他</span></label>
+  </div>
+</div>
+
+<div class="grid-2">
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 是否有打鼾/说梦话等？（噪音因子）</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="snore" value="none" required><span class="tag">没有</span></label>
+    <label class="chip"><input type="radio" name="snore" value="mild"><span class="tag">偶尔/轻微</span></label>
+    <label class="chip"><input type="radio" name="snore" value="severe"><span class="tag">经常/严重</span></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 你对在宿舍抽烟的态度？</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="smoking" value="smoke" required><span class="tag">我自己抽烟</span></label>
+    <label class="chip"><input type="radio" name="smoking" value="accept"><span class="tag">不抽但可接受舍友抽</span></label>
+    <label class="chip"><input type="radio" name="smoking" value="balcony"><span class="tag">仅限阳台/室外</span></label>
+    <label class="chip"><input type="radio" name="smoking" value="reject"><span class="tag">完全不能接受</span></label>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ====== D. 环境与边界 ====== -->
+<div class="card"><h3>D. 环境与边界（→ 雷达·噪音容忍度 + 边界感）</h3>
+
+<div class="grid-2">
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 对睡眠环境噪音的敏感程度</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="noise_sens" value="1" required><span class="tag">极度敏感<br><small>任何声音都会醒</small></span></label>
+    <label class="chip"><input type="radio" name="noise_sens" value="2"><span class="tag">比较敏感<br><small>较大声音会醒</small></span></label>
+    <label class="chip"><input type="radio" name="noise_sens" value="3"><span class="tag">一般<br><small>偶受影响</small></span></label>
+    <label class="chip"><input type="radio" name="noise_sens" value="4"><span class="tag">不太敏感<br><small>很少被吵醒</small></span></label>
+    <label class="chip"><input type="radio" name="noise_sens" value="5"><span class="tag">完全不敏感<br><small>不受影响</small></span></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 睡眠质量及对环境音的态度（核心预测变量，映射雷达"噪音容忍度"）</div>
+  <select name="sleep_sound" required>
+    <option value="">请选择...</option>
+    <option value="1">浅睡易醒，需绝对安静</option>
+    <option value="2">浅睡但可接受白噪音（风扇/空调声）</option>
+    <option value="3">正常睡眠，一般声音不影响</option>
+    <option value="4">深睡，较大声音也不醒</option>
+    <option value="5">无特殊要求，戴耳塞/耳机可解决</option>
+    <option value="6">我可能发出声音（打鼾等）</option>
+    <option value="7">视情况而定</option>
+  </select>
+</div>
+</div>
+
+<div class="form-group">
+  <div class="form-label">是否有特殊需求？（有特殊需求者对生活习惯重视度显著更高 d=1.31**）</div>
+  <div class="checkbox-group">
+    <label class="chip"><input type="checkbox" name="special" value="none" onclick="if(this.checked){document.querySelectorAll('input[name=special][value!=none]').forEach(c=>c.checked=false)}"><span class="tag">✅ 无特殊需求</span></label>
+    <label class="chip"><input type="checkbox" name="special" value="quiet" onclick="document.querySelector('input[name=special][value=none]').checked=false"><span class="tag">🤫 对安静有极高要求</span></label>
+    <label class="chip"><input type="checkbox" name="special" value="allergy" onclick="document.querySelector('input[name=special][value=none]').checked=false"><span class="tag">🤧 过敏/特殊体质</span></label>
+    <label class="chip"><input type="checkbox" name="special" value="early_sleep" onclick="document.querySelector('input[name=special][value=none]').checked=false"><span class="tag">🕘 必须早睡</span></label>
+    <label class="chip"><input type="checkbox" name="special" value="light_sleep" onclick="document.querySelector('input[name=special][value=none]').checked=false"><span class="tag">💡 入睡困难需全黑环境</span></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 在宿舍生活中，以下哪种描述最接近你？</div>
+  <div class="form-hint">边界感 = 不乱动别人东西、借东西先问、注意分寸、尊重隐私</div>
+  <select name="boundary" required style="width:100%">
+    <option value="">请选择...</option>
+    <option value="1">经常借用舍友东西不打招呼、随意坐别人床位、不太注意分寸</option>
+    <option value="2">偶尔忘记还东西、有时不注意就用了别人的、但无恶意</option>
+    <option value="3">借用前都会问、按时归还、不碰私人物品、保持适当距离</option>
+    <option value="4">从不未经允许碰别人东西、进别人空间前会示意、物品界限清晰</option>
+    <option value="5">高度尊重隐私、知进退、物品严格分区、主动维护边界</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 以下哪种描述最接近你的个人卫生习惯？</div>
+  <select name="hygiene" required style="width:100%">
+    <option value="">请选择...</option>
+    <option value="1">衣服堆积一周才洗、桌面常有食物残渣、可能有异味</option>
+    <option value="2">偶尔乱但不影响公共区域、大概一周打扫一次</option>
+    <option value="3">保持个人区域整洁、定期打扫、无明显异味</option>
+    <option value="4">物品归位、每日整理、主动承担公共卫生轮值</option>
+    <option value="5">井井有条、定期深度清洁、带头维护宿舍卫生标准</option>
+  </select>
+</div>
+</div>
+
+<!-- ====== E. 行为模式 ====== -->
+<div class="card"><h3>E. 行为模式（→ 雷达·驻留度 + 精力值）</h3>
+
+<div class="grid-2">
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 每天清醒时在宿舍的时长（除睡觉外）？<br><small style="color:#64748b">驻留度是噪音产出的"暴露乘数"</small></div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="dorm_stay" value="A" required><span class="tag">🏃 < 4h<br><small>早出晚归只睡觉</small></span></label>
+    <label class="chip"><input type="radio" name="dorm_stay" value="B"><span class="tag">🚶 4-8h<br><small>正常节奏</small></span></label>
+    <label class="chip"><input type="radio" name="dorm_stay" value="C"><span class="tag">🛋️ 8-12h<br><small>较多在宿舍</small></span></label>
+    <label class="chip"><input type="radio" name="dorm_stay" value="D"><span class="tag">🏠 > 12h<br><small>基本不出门</small></span></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 以下哪种描述最接近你的日常精力水平？<br><small style="color:#64748b">全低精力同寝有"集体摆烂"风险</small></div>
+  <select name="energy" required style="width:100%">
+    <option value="">请选择...</option>
+    <option value="1">很容易累、喜欢躺着、能不动就不动、一天下来精力消耗快</option>
+    <option value="2">精力一般、需要午休或休息来恢复、不喜欢高强度活动</option>
+    <option value="3">正常精力、能应对日常学习生活、偶尔运动</option>
+    <option value="4">精力较好、日常活跃、经常运动或参加活动</option>
+    <option value="5">精力充沛、闲不下来、活力满满、运动频繁</option>
+  </select>
+</div>
+</div>
+
+<div class="grid-2">
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 是否有住校经历？（边缘保护因子）</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="dorm_exp" value="yes" required onchange="toggleConditional('dorm_exp','yes','dormMonthsGroup',false)"><span class="tag">有</span></label>
+    <label class="chip"><input type="radio" name="dorm_exp" value="no" onchange="toggleConditional('dorm_exp','no','dormMonthsGroup',true)"><span class="tag">无</span></label>
+  </div>
+</div>
+
+<div class="form-group" id="dormMonthsGroup" style="display:none">
+  <div class="form-label">累计住校月数</div>
+  <input type="number" name="dorm_months" min="0" max="120" placeholder="例：24">
+</div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 宿舍人际氛围对你的学习状态影响如何？<br><small style="color:#64748b">数据揭示：宿舍摩擦→心情焦虑→消耗精力→影响学习（而非"学习目标一致→互相督促"）</small></div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="study_impact" value="5" required><span class="tag">🌟 积极影响<br><small>相处愉快更有动力</small></span></label>
+    <label class="chip"><input type="radio" name="study_impact" value="4"><span class="tag">😊 略有积极影响</span></label>
+    <label class="chip"><input type="radio" name="study_impact" value="3"><span class="tag">😐 无明显影响</span></label>
+    <label class="chip"><input type="radio" name="study_impact" value="2"><span class="tag">😟 有消极影响<br><small>消耗精力影响状态</small></span></label>
+    <label class="chip"><input type="radio" name="study_impact" value="1"><span class="tag">😫 严重消极影响<br><small>长期焦虑难以专注</small></span></label>
+  </div>
+</div>
+</div>
+
+<!-- ====== F. 人际风格 ====== -->
+<div class="card"><h3>F. 人际风格</h3>
+
+<div class="grid-2">
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 与舍友发生矛盾时，你倾向于？（D/Z维度）</div>
+  <div class="radio-group">
+    <label class="chip"><input type="radio" name="conflict_style" value="D" required><span class="tag">💬 直球沟通<br><small>直接当面说明</small></span></label>
+    <label class="chip"><input type="radio" name="conflict_style" value="third"><span class="tag">🤝 第三方调解<br><small>找辅导员/朋友帮忙</small></span></label>
+    <label class="chip"><input type="radio" name="conflict_style" value="Z"><span class="tag">🧘 佛系忍耐<br><small>算了不说了</small></span></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 在宿舍里，以下哪种描述最接近你的社交状态？（E/I维度）</div>
+  <select name="social" required style="width:100%">
+    <option value="">请选择...</option>
+    <option value="1">完全不想社交、戴耳机避免交流、喜欢独处、不太参与寝室话题</option>
+    <option value="2">偶尔参与闲聊、大部分时间独处、有自己的空间</option>
+    <option value="3">正常社交、适可而止、有边界感、参与但不主导</option>
+    <option value="4">喜欢聊天、主动发起话题、宿舍气氛担当、经常组织活动</option>
+    <option value="5">社交达人、经常带朋友来宿舍、喜欢热闹、宿舍是社交中心</option>
+  </select>
+</div>
+</div>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 宿舍人格量表 · 16型（整个问卷的核心锚定题目）<br><small style="color:#64748b">4维度(E/I/L/O/T/M/D/Z) → 16型 → MBTI映射 → 聚类画像</small></div>
+  <select name="personality_16" required>
+    <option value="">请选择最符合你的类型...</option>
+    <optgroup label="外向·晨鸟">
+      <option value="ELTD">ELTD 阳光舍长 — 外向+晨鸟+整洁+直球 → ESTJ</option>
+      <option value="ELTZ">ELTZ 温和管家 — 外向+晨鸟+整洁+佛系 → ESFJ</option>
+      <option value="ELMD">ELMD 早起冲锋 — 外向+晨鸟+随性+直球 → ESTP</option>
+      <option value="ELMZ">ELMZ 佛系早鸟 — 外向+晨鸟+随性+佛系 → ESFP</option>
+    </optgroup>
+    <optgroup label="外向·夜猫">
+      <option value="EOTD">EOTD 深夜社交 — 外向+夜猫+整洁+直球 → ENTJ</option>
+      <option value="EOTZ">EOTZ 夜店气氛 — 外向+夜猫+整洁+佛系 → ENFJ</option>
+      <option value="EOMD">EOMD 自由灵魂 — 外向+夜猫+随性+直球 → ENTP</option>
+      <option value="EOMZ">EOMZ 随缘躺平 — 外向+夜猫+随性+佛系 → ENFP</option>
+    </optgroup>
+    <optgroup label="内向·晨鸟">
+      <option value="ILTD">ILTD 安静领袖 — 内向+晨鸟+整洁+直球 → ISTJ</option>
+      <option value="ILTZ">ILTZ 宁静致远 — 内向+晨鸟+整洁+佛系 → ISFJ</option>
+      <option value="ILMD">ILMD 独行侠 — 内向+晨鸟+随性+直球 → ISTP</option>
+      <option value="ILMZ">ILMZ 隐士高人 — 内向+晨鸟+随性+佛系 → ISFP</option>
+    </optgroup>
+    <optgroup label="内向·夜猫">
+      <option value="IOTD">IOTD 深夜思考 — 内向+夜猫+整洁+直球 → INTJ</option>
+      <option value="IOTZ">IOTZ 夜行侠客 — 内向+夜猫+整洁+佛系 → INFJ</option>
+      <option value="IOMD">IOMD 独立艺术 — 内向+夜猫+随性+直球 → INTP</option>
+      <option value="IOMZ">IOMZ 终极躺平 — 内向+夜猫+随性+佛系 → INFP</option>
+    </optgroup>
+  </select>
+</div>
+</div>
+
+<!-- ====== G. 匹配偏好 ====== -->
+<div class="card"><h3>G. 匹配偏好</h3>
+
+<div class="form-group">
+  <div class="form-label"><span class="req">*</span> 选择室友时，你更看重什么？<br><small style="color:#64748b">依次点击选项自动排序，先点的排前面。点已排序项可取消</small></div>
+  <div id="rankWidget" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px">
+    <span class="chip rank-chip" data-rank-id="habit" onclick="toggleRank(this)" style="cursor:pointer"><span class="tag">📋 生活习惯</span></span>
+    <span class="chip rank-chip" data-rank-id="personality" onclick="toggleRank(this)" style="cursor:pointer"><span class="tag">🧠 性格三观</span></span>
+    <span class="chip rank-chip" data-rank-id="interest" onclick="toggleRank(this)" style="cursor:pointer"><span class="tag">🎯 兴趣爱好</span></span>
+    <span class="chip rank-chip" data-rank-id="economy" onclick="toggleRank(this)" style="cursor:pointer"><span class="tag">💰 经济条件</span></span>
+    <span class="chip rank-chip" data-rank-id="study" onclick="toggleRank(this)" style="cursor:pointer"><span class="tag">📚 学习目标</span></span>
+    <span class="chip rank-chip" data-rank-id="schedule" onclick="toggleRank(this)" style="cursor:pointer"><span class="tag">⏰ 作息一致</span></span>
+  </div>
+  <div id="rankOrder" style="margin-top:10px;font-size:13px;color:#818cf8;min-height:20px"></div>
+  <input type="hidden" name="rank_habit" id="rank_habit" value="0">
+  <input type="hidden" name="rank_personality" id="rank_personality" value="0">
+  <input type="hidden" name="rank_interest" id="rank_interest" value="0">
+  <input type="hidden" name="rank_economy" id="rank_economy" value="0">
+  <input type="hidden" name="rank_study" id="rank_study" value="0">
+  <input type="hidden" name="rank_schedule" id="rank_schedule" value="0">
+</div>
+
+<div class="form-group">
+  <div class="form-label">你是否愿意与现在的舍友继续同住？（1-5）</div>
+  <div class="range-wrap">
+    <span style="color:#94a3b8;font-size:12px">坚决不</span>
+    <input type="range" name="stay_willing" min="1" max="5" value="3" oninput="this.nextElementSibling.textContent=this.value">
+    <span class="range-val">3</span>
+    <span style="color:#94a3b8;font-size:12px">非常愿意</span>
+  </div>
+</div>
+</div>
+
+<div style="text-align:center;margin-top:24px">
+  <button type="button" class="btn btn-primary" onclick="submitQuestionnaire()" style="font-size:16px;padding:14px 48px;">
+    ✨ 生成我的宿舍角色画像
+  </button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- ==================== TAB 1: 雷达图 ==================== -->
+<div class="tab-content" id="tab1">
+<div class="grid-2">
+<div class="card">
+  <h3>🎯 你的宿舍角色属性 · RPG雷达图</h3>
+  <div class="radar-wrap">
+    <div class="chart-wrap" style="height:420px"><canvas id="radarChart"></canvas></div>
+  </div>
+</div>
+<div class="card">
+  <h3>📊 属性解读与匹配说明</h3>
+  <div id="radarProfile" style="font-size:13px;line-height:1.8;color:#cbd5e1">
+    <p style="color:#64748b">请先在「填写问卷」页完成问卷，再查看你的角色画像。</p>
+  </div>
+</div>
+</div>
+
+<div class="card">
+  <h3>🎮 六维"完美舍友"属性设计</h3>
+  <div class="insight-box" style="font-size:13px;line-height:1.8">
+    <strong>设计理念：</strong>六维全满即"完美舍友"——不吵、有事直说、管好自己、有目标、有边界感。每个维度 0-100 分，高分=好舍友特质，六边形越大越理想。<br><br>
+    <strong>🌅 晨型度</strong> — 自然醒的时间倾向。高分=早起规律（晨鸟型），低分=晚睡灵活（夜猫型）。作息是最强预测因子（rho=-0.539**），晨鸟与夜猫混寝是矛盾首要来源。<br>
+    <strong>🚧 边界感</strong> — 尊重隐私、知进退、不乱动东西。高分=高度边界感（完美舍友核心特质），低分=亲密无间不注意分寸。<br>
+    <strong>🏠 驻留度</strong> — 清醒时在宿舍的时长。高分=早出晚归（只回来睡觉），低分=全天窝在宿舍。这是噪音产出的"暴露乘数"——同样的噪音行为，驻留时间越长影响越大。<br>
+    <strong>🔇 噪音容忍度</strong> — 对睡眠/学习环境噪音的承受力。高分=百噪不侵，低分=一碰就醒。必须与安静度匹配：低容忍者配低噪音产出者。<br>
+    <strong>🤫 安静度</strong> — 自身发出的声音总量（反向）。高分=安静不出声，低分=开麦打游戏+外放+电话粥。与噪音容忍度形成互补匹配对。<br>
+    <strong>⚡ 精力值</strong> — 日常活力水平。高分=精力充沛，低分=容易累爱躺着。极端高精力与极端低精力不宜同寝（互相折磨），全低精力同寝有"集体摆烂"风险。<br><br>
+    <strong style="color:#818cf8">匹配逻辑：</strong>加权欧氏距离——六维向量越接近，匹配度越高。权重：晨型度×5，噪音容忍度×4，安静度×4，驻留度×3，边界感×2，精力值×2（基于实证效应量）。农村生源自动加权安静相关维度。极端精力错配触发惩罚系数。
+  </div>
+</div>
+</div>
+
+<!-- ==================== TAB 2: 智能匹配 ==================== -->
+<div class="tab-content" id="tab2">
+<div class="card">
+  <h3>🔮 智能匹配引擎</h3>
+  <div class="insight-box" style="margin-bottom:20px;font-size:13px">
+    <strong>🎯 算法目标：</strong>将N名学生分配到4人间宿舍，在全局最优与个体公平之间取得平衡。本系统实现两种算法并提供对比，特别设计了<strong style="color:#f59e0b">"稀有学生保护机制"</strong>——确保匹配选择有限的学生不会被"遗弃"。
+  </div>
+
+  <div class="grid-2" style="margin-bottom:20px">
+    <div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">学生数量</div>
+      <input type="range" id="studentCount" min="12" max="60" value="40" step="4" oninput="document.getElementById('studentCountVal').textContent=this.value" style="width:100%">
+      <div style="text-align:center;font-size:20px;font-weight:700;color:#818cf8" id="studentCountVal">40</div>
+    </div>
+    <div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">算法模式</div>
+      <div style="display:flex;gap:20px;align-items:center;margin-top:12px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <span class="toggle-switch"><input type="checkbox" id="fairMode" checked><span class="toggle-slider"></span></span>
+          <span style="font-size:14px"><span id="modeLabel">公平优先 (Maximin)</span></span>
+        </label>
+      </div>
+      <div id="modeDesc" style="font-size:12px;color:#94a3b8;margin-top:8px;line-height:1.6">
+        稀有学生优先保留其最佳匹配对象，最大化全局最低匹配分
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-bottom:20px">
+    <button class="btn btn-primary" onclick="runMatching()" style="font-size:15px;padding:12px 36px;">🔮 执行匹配模拟</button>
+    <button class="btn btn-outline btn-sm" onclick="regenerateStudents()">🔄 重新生成学生</button>
+  </div>
+</div>
+
+<!-- Matching Results -->
+<div id="matchResults" style="display:none">
+<div class="card">
+  <h3>📊 匹配得分矩阵（前24名学生 × 前24名）</h3>
+  <div style="overflow-x:auto;font-size:11px" id="heatmapContainer"></div>
+  <div style="margin-top:8px;font-size:11px;color:#64748b">
+    <span style="display:inline-block;width:16px;height:12px;background:#10b981;border-radius:2px;vertical-align:middle;margin-right:4px"></span> 80-100分
+    <span style="display:inline-block;width:16px;height:12px;background:#f59e0b;border-radius:2px;vertical-align:middle;margin-right:4px;margin-left:12px"></span> 60-79分
+    <span style="display:inline-block;width:16px;height:12px;background:#ef4444;border-radius:2px;vertical-align:middle;margin-right:4px;margin-left:12px"></span> &lt;60分
+  </div>
+</div>
+
+<div class="grid-2">
+<div class="card">
+  <h3 id="resultModeTitle">📋 分配结果</h3>
+  <div id="resultSummary" style="font-size:13px;margin-bottom:12px;color:#94a3b8"></div>
+  <div style="max-height:400px;overflow-y:auto" id="resultTable"></div>
+</div>
+<div class="card">
+  <h3>📈 匹配质量对比</h3>
+  <div class="chart-wrap" style="height:280px"><canvas id="qualityChart"></canvas></div>
+  <div id="rareStudentHighlight" class="insight-box" style="margin-top:12px;font-size:12px"></div>
+</div>
+</div>
+
+<div class="card">
+  <h3>📚 算法参考文献与理论基础</h3>
+  <div class="grid-2" style="font-size:12px;line-height:1.8;color:#94a3b8">
+    <div>
+      <strong style="color:#a5b4fc">1. 稳定婚姻问题 (Gale-Shapley, 1962)</strong><br>
+      Gale, D., & Shapley, L. S. (1962). "College Admissions and the Stability of Marriage." <em>American Mathematical Monthly</em>, 69(1), 9-15.<br>
+      提出延迟接受算法(Deferred Acceptance)，保证稳定匹配。2012年诺贝尔经济学奖。<br><br>
+      <strong style="color:#a5b4fc">2. 稳定室友问题 (Irving, 1985)</strong><br>
+      Irving, R. W. (1985). "An Efficient Algorithm for the 'Stable Roommates' Problem." <em>Journal of Algorithms</em>, 6(4), 577-595.<br>
+      将Gale-Shapley扩展到无性别区分的室友匹配，证明并非所有实例都存在稳定解。<br><br>
+      <strong style="color:#a5b4fc">3. 匈牙利算法 (Kuhn-Munkres)</strong><br>
+      Kuhn, H. W. (1955). "The Hungarian Method for the Assignment Problem." <em>Naval Research Logistics Quarterly</em>, 2(1-2), 83-97.<br>
+      多项式时间求解最优一对一匹配，可以作为宿舍分组的子步骤。
+    </div>
+    <div>
+      <strong style="color:#a5b4fc">4. 公平分配与Maximin原则 (Rawls, 1971)</strong><br>
+      Rawls, J. (1971). <em>A Theory of Justice</em>. Harvard University Press.<br>
+      差异原则(Difference Principle)：社会安排应最大化最不利者的福利。本算法将此哲学原则操作化为匹配算法的公平约束。<br><br>
+      <strong style="color:#a5b4fc">5. 大学宿舍匹配的实践研究</strong><br>
+      Perach, R., & Wandel, M. (2022). "Using algorithms to improve dormitory roommate matching." <em>Journal of Student Affairs Research and Practice</em>.<br>
+      实证检验了基于人格特质的算法匹配对学生满意度和学业表现的影响。<br><br>
+      <strong style="color:#a5b4fc">6. 稀有类型保护策略</strong><br>
+      本系统的"稀有学生保护机制"借鉴了推荐系统中的冷启动问题(cold-start)和长尾理论——匹配选择有限的学生(长尾)需要特殊优先级保护，否则会被热门学生(头部)的匹配"挤出"。
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Dorm Agreement -->
+<div id="agreementSection" style="display:none">
+<div class="card">
+  <h3>📜 宿舍公约（基于你们共同特征自动生成）</h3>
+  <div class="insight-box" style="margin-bottom:16px;font-size:12px">
+    <strong>💡 生成逻辑：</strong>根据匹配成功的舍友在六维雷达图上的共同特征，自动推导出适合本宿舍的规则。公约需全票通过，试行期<strong>1个月</strong>，超期不再受理投诉。
+  </div>
+  <div id="agreementRules" style="font-size:13px;line-height:2;color:#cbd5e1"></div>
+  <div id="agreementAccept" style="margin-top:20px;text-align:center">
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:12px">本宿舍成员确认同意以上公约：</div>
+    <div id="agreementMembers" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px"></div>
+    <button class="btn btn-success" onclick="acceptAgreement()" id="btnAcceptAgreement" style="font-size:15px;padding:12px 36px;opacity:0.5;pointer-events:none">
+      ✅ 全体同意，签署公约（试行1个月）
+    </button>
+    <div id="agreementDone" style="display:none;margin-top:16px">
+      <div class="alert alert-success" style="font-size:14px">
+        ✅ 公约已签署！试行期至 <strong id="trialEndDate"></strong>。<br>
+        期间如有问题可协商修订；超期不再受理宿舍投诉。
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Algorithm Reference Box (always visible) -->
+<div class="card" id="algoExplain">
+  <h3>🧠 算法详解：贪婪 vs 公平（Maximin）</h3>
+  <div class="grid-2" style="font-size:13px;line-height:1.8">
+    <div class="insight-box" style="margin-top:0">
+      <strong style="color:#f59e0b">🐺 贪婪模式 (Greedy Baseline)</strong><br><br>
+      1. 计算所有学生对之间的匹配得分<br>
+      2. 按得分从高到低排序<br>
+      3. 依次分配：每次取最高分的未分配对，将两人放入同一房间<br>
+      4. 房间满4人后关闭，继续下一对<br>
+      <br>
+      <strong style="color:#ef4444">问题：</strong>热门学生会被优先分配给高分匹配，稀有学生的高分匹配对象可能被"抢走"，导致稀有学生只能与低分对象匹配。
+    </div>
+    <div class="insight-box" style="margin-top:0">
+      <strong style="color:#10b981">⚖️ 公平模式 (Maximin + 稀有保护)</strong><br><br>
+      1. 计算匹配得分矩阵<br>
+      2. 计算每个学生的"稀有度" = 1 / (高分匹配数 + 1)<br>
+      3. 稀有学生获得<strong>优先匹配权</strong>：先为稀有学生锁定其最佳匹配对象<br>
+      4. 被锁定的热门学生不再参与贪婪竞争<br>
+      5. 剩余学生使用最大化最小得分的填充策略<br>
+      <br>
+      <strong style="color:#10b981">优势：</strong>保证每个学生（尤其是选择有限者）都能获得可接受的最低匹配质量。
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ============ GLOBAL STATE ============
+// Weights for 6 dimensions: 晨型度, 边界感, 驻留度, 噪音容忍度, 安静度, 精力值
+// Based on empirical effect sizes: chrono is strongest predictor (rho=-0.539**)
+const BASE_WEIGHTS = [5, 2, 3, 4, 4, 2]; // sum = 20
+let userProfile = null;
+let students = [];
+let matchMatrix = [];
+let radarChartInst = null;
+let qualityChartInst = null;
+let currentRooms = null;
+
+// ============ TAB SWITCHING ============
+function switchTab(idx){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',i===idx)});
+  document.querySelectorAll('.tab-content').forEach((c,i)=>{c.classList.toggle('active',i===idx)});
+  if(idx===1 && userProfile) renderRadar();
+  if(idx===2) initMatchingTab();
+}
+
+function initMatchingTab(){
+  if(students.length===0) regenerateStudents();
+}
+
+// ============ RANKING WIDGET ============
+const RANK_ITEMS = ['habit','personality','interest','economy','study','schedule'];
+const RANK_LABELS = {'habit':'生活习惯','personality':'性格三观','interest':'兴趣爱好','economy':'经济条件','study':'学习目标','schedule':'作息一致'};
+let rankOrder = []; // ordered list of rank-ids, index 0 = rank 1
+
+function toggleRank(chip){
+  const rid = chip.dataset.rankId;
+  const idx = rankOrder.indexOf(rid);
+  if(idx >= 0){
+    // Already ranked — remove it
+    rankOrder.splice(idx, 1);
+    chip.classList.remove('ranked');
+    chip.querySelector('.tag').removeAttribute('data-rank');
+  } else {
+    // Not ranked yet — add to end
+    rankOrder.push(rid);
+  }
+  updateRankDisplay();
+}
+
+function updateRankDisplay(){
+  // Update chip visuals
+  document.querySelectorAll('.rank-chip').forEach(chip=>{
+    const rid = chip.dataset.rankId;
+    const idx = rankOrder.indexOf(rid);
+    if(idx >= 0){
+      chip.classList.add('ranked');
+      chip.querySelector('.tag').setAttribute('data-rank', idx+1);
+    } else {
+      chip.classList.remove('ranked');
+      chip.querySelector('.tag').removeAttribute('data-rank');
+    }
+  });
+  // Update hidden inputs
+  RANK_ITEMS.forEach(rid=>{
+    const idx = rankOrder.indexOf(rid);
+    const inp = document.getElementById('rank_'+rid);
+    if(inp) inp.value = idx >= 0 ? idx+1 : 0;
+  });
+  // Update order display
+  const orderDiv = document.getElementById('rankOrder');
+  if(rankOrder.length === 0){
+    orderDiv.innerHTML = '<span style="color:#64748b">点击上方选项开始排序 →</span>';
+  } else {
+    orderDiv.innerHTML = '你的排序：' + rankOrder.map((rid,i)=>`<span>${i+1}. ${RANK_LABELS[rid]}</span>`).join('');
+  }
+}
+
+// ============ CONDITIONAL DISPLAY ============
+function toggleConditional(fieldName, triggerValue, targetId, hideWhen){
+  const checked = document.querySelector(`input[name="${fieldName}"]:checked`);
+  const target = document.getElementById(targetId);
+  if(!target || !checked) return;
+  const matches = checked.value === triggerValue;
+  target.style.display = hideWhen ? (matches ? 'none' : 'block') : (matches ? 'block' : 'none');
+}
+
+// ============ TAB 0: QUESTIONNAIRE ============
+function submitQuestionnaire(){
+  const form = document.getElementById('dormForm');
+  if(!form.checkValidity()){form.reportValidity();return;}
+
+  const fd = new FormData(form);
+
+  // --- Parse raw answers ---
+  const origin = fd.get('origin');
+  const chronotype = fd.get('chronotype');
+  const sleepRange = fd.get('sleep_range');
+  const sleepVariance = fd.get('sleep_variance');
+  const bedtime = fd.get('bedtime') || '';
+  const waketime = fd.get('waketime') || '';
+  const sibHarmony = parseInt(fd.get('sibling_harmony')) || 3;
+
+  // Noise matrix (7 rows × frequency 0-3)
+  let noiseTotal = 0;
+  const noiseRowScores = [];
+  for(let i=0;i<7;i++){
+    const val = parseInt(fd.get('noise_'+i)) || 0;
+    noiseTotal += val;
+    noiseRowScores.push(val);
+  }
+  const gameTypes = fd.getAll('game_type');
+  const snore = fd.get('snore');
+  const smoking = fd.get('smoking');
+
+  const noiseSens = parseInt(fd.get('noise_sens')) || 3;
+  const sleepSound = parseInt(fd.get('sleep_sound')) || 3;
+  const special = fd.getAll('special');
+  const boundary = parseInt(fd.get('boundary')) || 3;
+  const hygiene = parseInt(fd.get('hygiene')) || 3;
+
+  const dormStay = fd.get('dorm_stay');
+  const energy = parseInt(fd.get('energy')) || 3;
+  const dormExp = fd.get('dorm_exp');
+  const dormMonths = parseInt(fd.get('dorm_months')) || 0;
+  const studyImpact = parseInt(fd.get('study_impact')) || 3;
+
+  const conflictStyle = fd.get('conflict_style');
+  const social = parseInt(fd.get('social')) || 3;
+  const personality16 = fd.get('personality_16');
+
+  const rankHabit = parseInt(fd.get('rank_habit')) || 0;
+  const rankPersonality = parseInt(fd.get('rank_personality')) || 0;
+  const rankInterest = parseInt(fd.get('rank_interest')) || 0;
+  const rankEconomy = parseInt(fd.get('rank_economy')) || 0;
+  const rankStudy = parseInt(fd.get('rank_study')) || 0;
+  const rankSchedule = parseInt(fd.get('rank_schedule')) || 0;
+  // Validate all 6 ranked
+  const ranks = [rankHabit, rankPersonality, rankInterest, rankEconomy, rankStudy, rankSchedule];
+  if(ranks.some(r=>r<1||r>6) || new Set(ranks).size !== 6){
+    alert('请依次点击所有6个选项完成排序（每个选项获得唯一排名1-6）');
+    return;
+  }
+  const stayWilling = parseInt(fd.get('stay_willing')) || 3;
+
+  // --- Compute 6 radar dimensions (0-100, higher = better roommate) ---
+
+  // 1. 晨型度: chronotype(35%) + sleep_range(35%) + sleep_variance(30%)
+  //    variance纳入晨型度：手机厂商算法——1am但每天准时也比10pm-12am乱飘更"规律"
+  const chronoMap = {'L':100, 'LO':70, 'OO':30, 'O':0};
+  const sleepMap = {'A':100, 'B':75, 'C':50, 'D':25, 'E':0};
+  const varianceMap = {'A':100, 'B':75, 'C':50, 'D':25, 'E':0};
+  const chronoPart = chronoMap[chronotype] || 50;
+  const sleepPart = sleepMap[sleepRange] || 50;
+  const variancePart = varianceMap[sleepVariance] || 50;
+  const chronoMorning = Math.round(chronoPart * 0.35 + sleepPart * 0.35 + variancePart * 0.3);
+
+  // 2. 边界感
+  const boundaryScore = (boundary - 1) * 25;
+
+  // 3. 驻留度: less time = higher score
+  const stayMap = {'A':100, 'B':67, 'C':33, 'D':0};
+  const stayScore = stayMap[dormStay] || 50;
+
+  // 4. 噪音容忍度: noise_sens(50%) + sleep_sound(50%) - special penalties
+  const noiseSensScore = (noiseSens - 1) * 25;
+  const sleepSoundMap = {1:0, 2:20, 3:40, 4:60, 5:50, 6:30, 7:40};
+  const sleepSoundScore = sleepSoundMap[sleepSound] || 40;
+  let quietTolerance = Math.round((noiseSensScore + sleepSoundScore) / 2);
+  if(special.includes('quiet')) quietTolerance -= 20;
+  if(special.includes('light_sleep')) quietTolerance -= 15;
+  if(special.includes('early_sleep')) quietTolerance -= 15;
+  quietTolerance = Math.max(0, Math.min(100, quietTolerance));
+
+  // 5. 安静度: noise matrix reversed + snore/smoking penalties
+  const MAX_NOISE = 21; // 7 rows × 3
+  let quietOutput = Math.round(100 - (noiseTotal / MAX_NOISE) * 100);
+  if(snore === 'mild') quietOutput -= 15;
+  if(snore === 'severe') quietOutput -= 30;
+  if(smoking === 'smoke') quietOutput -= 20;
+  if(smoking === 'accept') quietOutput -= 5;
+  quietOutput = Math.max(0, Math.min(100, quietOutput));
+
+  // 6. 精力值
+  const energyScore = (energy - 1) * 25;
+
+  // Build profile
+  userProfile = {
+    origin: origin,
+    dims: [chronoMorning, boundaryScore, stayScore, quietTolerance, quietOutput, energyScore],
+    raw: {origin, chronotype, sleepRange, sleepVariance, bedtime, waketime, sibHarmony,
+          noiseRowScores, gameTypes, snore, smoking,
+          noiseSens, sleepSound, special, boundary, hygiene,
+          dormStay, energy, dormExp, dormMonths, studyImpact,
+          conflictStyle, social, personality16,
+          rankHabit, rankPersonality, rankInterest, rankEconomy, rankStudy, rankSchedule,
+          stayWilling}
+  };
+
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = '✅ 问卷完成！正在生成角色画像...';
+
+  setTimeout(()=>{switchTab(1);renderRadar();}, 400);
+}
+
+// ============ TAB 1: RADAR CHART ============
+const RADAR_LABELS = ['🌅 晨型度', '🚧 边界感', '🏠 驻留度', '🔇 噪音容忍度', '🤫 安静度', '⚡ 精力值'];
+const RADAR_DIMS = [
+  {name:'晨型度', icon:'🌅', hi:'早起规律型', lo:'晚睡灵活型', desc:'自然醒的时间倾向，越高越早起'},
+  {name:'边界感', icon:'🚧', hi:'高度边界感', lo:'亲密无间型', desc:'尊重隐私、知进退、不乱动东西'},
+  {name:'驻留度', icon:'🏠', hi:'早出晚归型', lo:'全天宅寝型', desc:'清醒时在宿舍的时长（暴露乘数）'},
+  {name:'噪音容忍度', icon:'🔇', hi:'高容忍·百噪不侵', lo:'低容忍·一碰就醒', desc:'对睡眠/学习环境噪音的承受力'},
+  {name:'安静度', icon:'🤫', hi:'安静不出声', lo:'噪音产出多', desc:'自身产生的声音总量（反向）'},
+  {name:'精力值', icon:'⚡', hi:'精力充沛型', lo:'低能量型', desc:'日常活力水平，影响宿舍氛围'}
+];
+
+function renderRadar(){
+  if(!userProfile) return;
+
+  const data = userProfile.dims;
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  if(radarChartInst) radarChartInst.destroy();
+
+  radarChartInst = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: RADAR_LABELS,
+      datasets: [{
+        label: '你的宿舍角色属性',
+        data: data,
+        backgroundColor: 'rgba(129,140,248,0.2)',
+        borderColor: '#818cf8',
+        borderWidth: 2,
+        pointBackgroundColor: data.map(v => v>=70?'#10b981':v>=40?'#f59e0b':'#ef4444'),
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 6,
+        pointHoverRadius: 9
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {stepSize: 20, color: '#64748b', backdropColor: 'transparent', font:{size:10}},
+          pointLabels: {color: '#cbd5e1', font:{size:12}},
+          grid: {color: 'rgba(51,65,85,0.5)'},
+          angleLines: {color: 'rgba(51,65,85,0.5)'}
+        }
+      },
+      plugins: {legend: {display: false}}
+    }
+  });
+
+  // Profile text
+  const r = userProfile.raw;
+  const originLabel = userProfile.origin === 'rural' ? '🌾 农村' : '🏙️ 城镇';
+  const sleepLabelMap = {A:'极早睡(22:30前)', B:'早睡(22:30-23:30)', C:'正常(23:30-24:00)', D:'晚睡(24:00-1:00)', E:'熬夜(1:00后)'};
+  const sleepLabel = sleepLabelMap[r.sleepRange] || '';
+  const chronoLabelMap = {L:'晨鸟', LO:'偏晨', OO:'偏夜', O:'夜猫'};
+  const chronoLabel = chronoLabelMap[r.chronotype] || '';
+  const personalityNames = {
+    'ELTD':'阳光舍长','ELTZ':'温和管家','ELMD':'早起冲锋','ELMZ':'佛系早鸟',
+    'EOTD':'深夜社交','EOTZ':'夜店气氛','EOMD':'自由灵魂','EOMZ':'随缘躺平',
+    'ILTD':'安静领袖','ILTZ':'宁静致远','ILMD':'独行侠','ILMZ':'隐士高人',
+    'IOTD':'深夜思考','IOTZ':'夜行侠客','IOMD':'独立艺术','IOMZ':'终极躺平'
+  };
+  const persLabel = personalityNames[r.personality16] || '';
+
+  let html = `<div style="font-size:12px;color:#94a3b8;margin-bottom:8px">${originLabel} | ${chronoLabel} | ${sleepLabel}`;
+  if(r.bedtime) html += ` | ${r.bedtime}睡`;
+  if(r.waketime) html += ` ${r.waketime}起`;
+  if(persLabel) html += ` | 🎭 ${persLabel}`;
+  html += `</div>`;
+  html += '<div class="stat-row">';
+  RADAR_DIMS.forEach((d,i)=>{
+    html += `<div class="stat-item"><div class="val">${data[i]}</div><div class="lbl">${d.name}</div></div>`;
+  });
+  html += '</div><div style="margin-top:16px;font-size:13px;line-height:2;color:#cbd5e1">';
+  RADAR_DIMS.forEach((d,i)=>{
+    const cls = data[i] >= 70 ? '#10b981' : data[i] >= 40 ? '#f59e0b' : '#ef4444';
+    html += `<span style="color:${cls}">${d.icon} ${d.name}：${data[i] >= 50 ? d.hi : d.lo}</span><br>`;
+  });
+
+  // Matching hints
+  html += `<br><span style="color:#818cf8">🎯 匹配提示：</span><br>`;
+  if(data[0] >= 70) html += `<span style="color:#94a3b8">→ 晨型度高，建议匹配同属早起型舍友</span><br>`;
+  else if(data[0] <= 30) html += `<span style="color:#94a3b8">→ 夜猫型，建议匹配同样晚睡的舍友避免作息冲突</span><br>`;
+  if(data[3] <= 30) html += `<span style="color:#94a3b8">→ 噪音容忍度低，必须匹配安静度高的舍友</span><br>`;
+  if(data[4] <= 30) html += `<span style="color:#94a3b8">→ 自身噪音产出较高，建议匹配噪音容忍度高的舍友</span><br>`;
+  if(userProfile.origin === 'rural') html += `<span style="color:#f59e0b">→ 农村生源：匹配时加权安静与经济兼容性</span><br>`;
+  if(data[5] <= 25) html += `<span style="color:#ef4444">⚠ 精力值极低：避免与其他低精力舍友同寝（集体摆烂风险）</span><br>`;
+  html += '</div>';
+
+  document.getElementById('radarProfile').innerHTML = html;
+}
+
+// ============ TAB 2: MATCHING ALGORITHM ============
+function regenerateStudents(){
+  const n = parseInt(document.getElementById('studentCount').value);
+  students = [];
+  const names = ['张伟','李娜','王芳','刘洋','陈静','杨帆','赵敏','黄蕾','周杰','吴鑫',
+                 '郑爽','钱进','孙悦','马超','朱峰','胡歌','林黛','何冰','郭靖','黄蓉',
+                 '杨过','小龙','张飞','关羽','赵云','诸葛','司马','欧阳','令狐','任盈',
+                 '韦小宝','康熙','雍正','乾隆','李白','杜甫','苏轼','辛弃','岳飞','韩信',
+                 '萧何','张良','项羽','刘邦','曹操','孙权','刘备','周瑜','陆逊','姜维',
+                 '花木兰','武则天','慈禧','珍妃','孝庄','卫子夫','王昭君','貂蝉','杨贵妃','西施'];
+
+  for(let i=0;i<n;i++){
+    const cluster = Math.floor(Math.random()*5); // 5 archetypes
+    let morning, boundary, stay, quietTol, quietOut, energy, origin;
+    origin = Math.random() < 0.25 ? 'rural' : 'urban';
+
+    if(cluster===0){ // 早起自律型: high morning, high boundary, low stay
+      morning = rand(70,100); boundary = rand(60,100); stay = rand(50,100);
+      quietTol = rand(30,70); quietOut = rand(50,100); energy = rand(50,100);
+    }else if(cluster===1){ // 夜猫宅寝型: low morning, low stay score (stays in dorm), high quiet out
+      morning = rand(0,35); boundary = rand(20,60); stay = rand(0,40);
+      quietTol = rand(30,80); quietOut = rand(30,70); energy = rand(20,60);
+    }else if(cluster===2){ // 社牛噪音型: high energy, low quiet out
+      morning = rand(20,60); boundary = rand(0,50); stay = rand(20,60);
+      quietTol = rand(50,100); quietOut = rand(0,30); energy = rand(60,100);
+    }else if(cluster===3){ // 安静敏感型: low quietTol, high quiet out, high boundary
+      morning = rand(30,80); boundary = rand(50,100); stay = rand(30,80);
+      quietTol = rand(0,25); quietOut = rand(70,100); energy = rand(20,60);
+    }else{ // 低精力型: low energy, mid everything
+      morning = rand(20,70); boundary = rand(30,70); stay = rand(20,60);
+      quietTol = rand(40,80); quietOut = rand(50,90); energy = rand(0,25);
+    }
+    students.push({
+      id: i, name: names[i]||`学生${i+1}`,
+      origin: origin,
+      profile: [morning, boundary, stay, quietTol, quietOut, energy]
+    });
+  }
+
+  // Inject rare student + popular student for demo
+  if(n >= 8){
+    students[0].profile = [95, 85, 80, 5, 95, 50]; // 极端晨鸟+安静敏感+高边界 → 匹配困难户
+    students[0].name = '🦄 安静(稀有型)';
+    students[0].origin = 'urban';
+    students[1].profile = [70, 65, 60, 60, 70, 60]; // 万金油平衡型
+    students[1].name = '⭐ 均衡(万金油)';
+    students[1].origin = 'urban';
+    for(let i=2;i<8;i++){
+      students[i].profile = [
+        students[1].profile[0] + rand(-10,10),
+        students[1].profile[1] + rand(-10,10),
+        students[1].profile[2] + rand(-10,10),
+        students[1].profile[3] + rand(-10,10),
+        students[1].profile[4] + rand(-10,10),
+        students[1].profile[5] + rand(-10,10)
+      ].map(v=>Math.max(0,Math.min(100,v)));
+    }
+  }
+
+  computeMatchMatrix();
+  document.getElementById('matchResults').style.display = 'none';
+}
+
+function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+
+function computeMatchMatrix(){
+  const n = students.length;
+  matchMatrix = Array.from({length:n},()=>Array(n).fill(0));
+  for(let i=0;i<n;i++){
+    for(let j=i+1;j<n;j++){
+      const score = computeMatchScore(students[i], students[j]);
+      matchMatrix[i][j] = score;
+      matchMatrix[j][i] = score;
+    }
+  }
+}
+
+function computeMatchScore(s1, s2){
+  let w = [...BASE_WEIGHTS];
+
+  // 生源地调整：农村生源加权安静相关维度
+  if(s1.origin === 'rural' || s2.origin === 'rural'){
+    w = [...w];
+    w[3] = Math.round(w[3] * 1.5); // 噪音容忍度 +50%（农村安静需求是城镇3倍）
+    w[4] = Math.round(w[4] * 1.3); // 安静度 +30%（作息一致性差异d=-0.664）
+  }
+
+  // 精力水平特殊匹配：极端高精力 vs 极端低精力 → 加大惩罚
+  const e1 = s1.profile[5], e2 = s2.profile[5];
+  if((e1 >= 80 && e2 <= 20) || (e2 >= 80 && e1 <= 20)){
+    w = [...w];
+    w[5] = Math.round(w[5] * 2.0); // 精力权重翻倍 → 拉大距离 → 降低匹配分
+  }
+
+  const p1 = s1.profile, p2 = s2.profile;
+  const totalW = w.reduce((a,b)=>a+b, 0);
+  let sumSq = 0;
+  for(let i=0;i<6;i++){
+    const diff = (p1[i]-p2[i])/100;
+    sumSq += w[i] * diff * diff;
+  }
+  const maxDist = Math.sqrt(totalW);
+  const dist = Math.sqrt(sumSq);
+  const score = Math.round((1 - dist/maxDist) * 100);
+  return Math.max(0, Math.min(100, score));
+}
+
+function runMatching(){
+  if(students.length===0) regenerateStudents();
+  computeMatchMatrix();
+  const fairMode = document.getElementById('fairMode').checked;
+
+  // Update mode label
+  document.getElementById('modeLabel').textContent = fairMode ? '公平优先 (Maximin)' : '贪婪匹配 (Greedy)';
+  document.getElementById('modeDesc').textContent = fairMode ?
+    '稀有学生优先保留其最佳匹配对象，最大化全局最低匹配分' :
+    '按匹配得分从高到低依次分配，可能导致稀有学生被"挤出"';
+
+  let assignments;
+  if(fairMode){
+    assignments = fairMatching();
+  } else {
+    assignments = greedyMatching();
+  }
+
+  displayResults(assignments, fairMode);
+}
+
+function greedyMatching(){
+  const n = students.length;
+  const assigned = new Set();
+  const rooms = [];
+  // Build all pairs sorted by score
+  const pairs = [];
+  for(let i=0;i<n;i++){
+    for(let j=i+1;j<n;j++){
+      pairs.push({i,j,score:matchMatrix[i][j]});
+    }
+  }
+  pairs.sort((a,b)=>b.score-a.score);
+
+  for(const pair of pairs){
+    if(assigned.has(pair.i) || assigned.has(pair.j)) continue;
+    // Find or create room
+    let room = rooms.find(r=>r.members.length<4);
+    if(!room){room={members:[]};rooms.push(room);}
+    room.members.push(pair.i, pair.j);
+    assigned.add(pair.i); assigned.add(pair.j);
+  }
+  // Assign remaining unassigned
+  for(let i=0;i<n;i++){
+    if(!assigned.has(i)){
+      let room = rooms.find(r=>r.members.length<4);
+      if(!room){room={members:[]};rooms.push(room);}
+      room.members.push(i);
+      assigned.add(i);
+    }
+  }
+  return rooms;
+}
+
+function fairMatching(){
+  const n = students.length;
+  const assigned = new Set();
+  const rooms = [];
+  const reserved = new Map(); // student -> reserved partner
+
+  // Step 1: Compute rareness
+  const rareThreshold = 70;
+  const matchCounts = [];
+  for(let i=0;i<n;i++){
+    let cnt = 0;
+    for(let j=0;j<n;j++){
+      if(i!==j && matchMatrix[i][j] >= rareThreshold) cnt++;
+    }
+    const rareness = 1/(cnt+1);
+    matchCounts.push({id:i, rareness, bestMatch:null, bestScore:0});
+  }
+
+  // Find each student's best match
+  for(let i=0;i<n;i++){
+    let bestJ = -1, bestS = -1;
+    for(let j=0;j<n;j++){
+      if(i!==j && matchMatrix[i][j] > bestS){bestS=matchMatrix[i][j];bestJ=j;}
+    }
+    matchCounts[i].bestMatch = bestJ;
+    matchCounts[i].bestScore = bestS;
+  }
+
+  // Step 2: Rare students get priority - lock their best match
+  matchCounts.sort((a,b)=>b.rareness-a.rareness); // most rare first
+  for(const mc of matchCounts){
+    if(mc.rareness > 0.3 && mc.bestMatch >= 0){ // rare students
+      const best = mc.bestMatch;
+      if(!reserved.has(mc.id) && !reserved.has(best) && !assigned.has(mc.id) && !assigned.has(best)){
+        reserved.set(mc.id, best);
+        reserved.set(best, mc.id);
+        // Assign to room
+        let room = rooms.find(r=>r.members.length<4);
+        if(!room){room={members:[]};rooms.push(room);}
+        room.members.push(mc.id, best);
+        assigned.add(mc.id); assigned.add(best);
+      }
+    }
+  }
+
+  // Step 3: Remaining students - maximin assignment
+  const remaining = [];
+  for(let i=0;i<n;i++){
+    if(!assigned.has(i)) remaining.push(i);
+  }
+
+  // Sort remaining by minimum possible match score (worst-case first)
+  remaining.sort((a,b)=>{
+    const minA = Math.min(...matchMatrix[a].filter((_,j)=>!assigned.has(j)&&j!==a));
+    const minB = Math.min(...matchMatrix[b].filter((_,j)=>!assigned.has(j)&&j!==b));
+    return minA - minB; // lower min = more urgent
+  });
+
+  while(remaining.length > 0){
+    const i = remaining.shift();
+    if(assigned.has(i)) continue;
+
+    // Find best available match among remaining
+    let bestJ = -1, bestS = -1;
+    for(const j of remaining){
+      if(!assigned.has(j) && matchMatrix[i][j] > bestS){
+        bestS = matchMatrix[i][j]; bestJ = j;
+      }
+    }
+
+    let room = rooms.find(r=>r.members.length<4);
+    if(!room){room={members:[]};rooms.push(room);}
+    room.members.push(i);
+    assigned.add(i);
+
+    if(bestJ >= 0 && !assigned.has(bestJ) && room.members.length < 4){
+      room.members.push(bestJ);
+      assigned.add(bestJ);
+      const idx = remaining.indexOf(bestJ);
+      if(idx>=0) remaining.splice(idx,1);
+    }
+  }
+
+  return rooms;
+}
+
+function displayResults(rooms, fairMode){
+  document.getElementById('matchResults').style.display = 'block';
+  document.getElementById('resultModeTitle').textContent = fairMode ? '⚖️ 公平优先分配结果' : '🐺 贪婪匹配分配结果';
+
+  // Summary stats
+  const allScores = [];
+  const allMins = [];
+  rooms.forEach((room,i)=>{
+    const pairScores = [];
+    for(let a=0;a<room.members.length;a++){
+      for(let b=a+1;b<room.members.length;b++){
+        const s = matchMatrix[room.members[a]][room.members[b]];
+        allScores.push(s);
+        pairScores.push(s);
+      }
+    }
+    allMins.push(pairScores.length>0?Math.min(...pairScores):0);
+  });
+
+  const avgScore = (allScores.reduce((a,b)=>a+b,0)/allScores.length).toFixed(1);
+  const minScore = Math.min(...allMins);
+  const maxMin = Math.max(...allMins);
+
+  document.getElementById('resultSummary').innerHTML = `
+    共 <strong style="color:#818cf8">${rooms.length} 间宿舍</strong> |
+    平均匹配分: <strong style="color:#06b6d4">${avgScore}</strong> |
+    最低房间分: <strong style="color:${minScore<60?'#ef4444':'#10b981'}">${minScore.toFixed(0)}</strong> |
+    全局最差分: <strong style="color:${maxMin<60?'#f59e0b':'#10b981'}">${Math.round(maxMin)}</strong>
+  `;
+
+  // Room table
+  let tbl = '<table class="match-table"><thead><tr><th>房间</th><th>成员</th><th>配对得分</th><th>精力均分</th><th>房间最低</th></tr></thead><tbody>';
+  let slackerWarnings = [];
+  rooms.forEach((room,i)=>{
+    const pairScores = [];
+    const pairs = [];
+    for(let a=0;a<room.members.length;a++){
+      for(let b=a+1;b<room.members.length;b++){
+        const s = matchMatrix[room.members[a]][room.members[b]];
+        pairScores.push(s);
+        pairs.push(`${students[room.members[a]].name}-${students[room.members[b]].name}: ${s}%`);
+      }
+    }
+    const roomMin = pairScores.length>0?Math.min(...pairScores):0;
+    const cls = roomMin>=70?'match-high':roomMin>=50?'match-mid':'match-low';
+    // Energy check
+    const avgEnergy = Math.round(room.members.reduce((s,m)=>s+students[m].profile[5],0)/room.members.length);
+    const allLowEnergy = room.members.every(m=>students[m].profile[5] <= 30);
+    const energyCls = allLowEnergy ? 'color:#ef4444;font-weight:700' : 'color:#94a3b8';
+    if(allLowEnergy) slackerWarnings.push(i+1);
+    tbl += `<tr>
+      <td><strong>🏠 ${i+1}号房</strong>${allLowEnergy?' <span style="color:#ef4444;font-size:10px">⚠摆烂风险</span>':''}</td>
+      <td>${room.members.map(m=>students[m].name).join(', ')}</td>
+      <td style="font-size:11px">${pairs.join('<br>')}</td>
+      <td style="${energyCls}">${avgEnergy}</td>
+      <td><span class="match-badge ${cls}">${Math.round(roomMin)}%</span></td>
+    </tr>`;
+  });
+  tbl += '</tbody></table>';
+  document.getElementById('resultTable').innerHTML = tbl;
+
+  // Slacker warnings
+  if(slackerWarnings.length > 0){
+    document.getElementById('resultSummary').innerHTML +=
+      `<br><span style="color:#ef4444;font-size:12px">⚠ 检测到 ${slackerWarnings.length} 间宿舍（${slackerWarnings.map(n=>n+'号').join('、')}）全员精力值≤30，存在"集体摆烂"风险。建议混入至少1名中高精力学生。</span>`;
+  }
+
+  // Highlight rare student
+  const rareStudent = students.find(s=>s.name.includes('稀有'));
+  const popularStudent = students.find(s=>s.name.includes('万金油'));
+  if(rareStudent && popularStudent){
+    const rareIdx = rareStudent.id;
+    const popIdx = popularStudent.id;
+    const rarePopScore = matchMatrix[rareIdx][popIdx];
+    // Find which room rare student is in
+    let rareRoom = -1, popRoom = -1, rareRoomMates = [], rareRoomScores = [];
+    rooms.forEach((r,i)=>{
+      if(r.members.includes(rareIdx)){rareRoom=i;rareRoomMates=r.members;}
+      if(r.members.includes(popIdx)) popRoom = i;
+    });
+    document.getElementById('rareStudentHighlight').innerHTML = `
+      <strong>🦄 稀有学生保护演示：</strong><br>
+      <strong>${rareStudent.name}</strong> 的最佳匹配是 <strong>${popularStudent.name}</strong>（得分 <span style="color:#f59e0b">${rarePopScore}%</span>），
+      二人${rareRoom===popRoom?'<span style="color:#10b981">✓ 被分配到同一房间（'+rareRoom+'号房）</span>':'<span style="color:#ef4444">✗ 未被分配到同一房间</span>'}。<br>
+      ${rareRoom===popRoom ?
+        `<span style="color:#10b981">✅ 稀有保护生效：</span>稀有学生的唯一高分匹配被保留，未被更热门的配对"挤出"。` :
+        `<span style="color:#ef4444">⚠️ 稀有保护失败：</span>切换为公平模式以获得更好结果。`
+      }
+    `;
+  }
+
+  // Store rooms for agreement generation
+  currentRooms = rooms;
+
+  // Add agreement button
+  document.getElementById('resultSummary').innerHTML +=
+    `<br><button class="btn btn-outline btn-sm" onclick="generateDormAgreement(0)" style="margin-top:8px">📜 为一号房生成宿舍公约</button>`;
+
+  // Quality comparison chart
+  renderQualityChart(fairMode, rooms);
+
+  // Heatmap
+  renderHeatmap();
+}
+
+// ============ DORM AGREEMENT ============
+function generateDormAgreement(roomIdx){
+  if(!currentRooms || roomIdx >= currentRooms.length) return;
+  const room = currentRooms[roomIdx];
+  const memberIndices = room.members;
+  const members = memberIndices.map(i => students[i]);
+  const profiles = members.map(m => m.profile);
+
+  // Average the 6 dimensions across room members
+  const avg = [0,0,0,0,0,0];
+  profiles.forEach(p => { for(let i=0;i<6;i++) avg[i]+=p[i]; });
+  for(let i=0;i<6;i++) avg[i] = Math.round(avg[i]/members.length);
+
+  const rules = [];
+
+  // 1. 安静时段 (based on 晨型度 avg[0])
+  if(avg[0] >= 70){
+    rules.push({icon:'🌙', title:'安静时段', detail:'22:30 - 6:30 为安静时段。期间禁止外放音频、语音开麦、大声喧哗。如需接电话请到走廊或阳台。'});
+  }else if(avg[0] >= 40){
+    rules.push({icon:'🌙', title:'安静时段', detail:'23:30 - 7:30 为安静时段。期间禁止外放、语音开麦。深夜使用键盘请用静音款。'});
+  }else{
+    rules.push({icon:'🌙', title:'安静时段', detail:'0:30 - 9:00 为安静时段。本宿舍整体偏晚睡，但仍需保证该时段内不打扰已入睡舍友。'});
+  }
+
+  // 2. 非安静时段的噪音 (based on 噪音容忍度 avg[3] + 安静度 avg[4])
+  if(avg[3] <= 40 || avg[4] >= 70){
+    rules.push({icon:'🔇', title:'日间噪音', detail:'非安静时段内，戴耳机进行娱乐活动；长时间外放或语音需征得舍友同意。因本舍对噪音较敏感，请互相体谅。'});
+  }else{
+    rules.push({icon:'🔇', title:'日间噪音', detail:'非安静时段内正常活动不受限，外放音量适中即可。非集体或既定入睡时间外，不得要求其他舍友保持绝对安静。'});
+  }
+
+  // 3. 公共卫生 (based on 边界感 avg[1])
+  if(avg[1] >= 60){
+    rules.push({icon:'🧹', title:'卫生值日', detail:'每周轮流打扫卫生2次（如周三+周日）。洗手台用完即清，不留头发和水渍。公共垃圾桶每人轮流倒。'});
+  }else if(avg[1] >= 35){
+    rules.push({icon:'🧹', title:'卫生值日', detail:'每周轮流打扫卫生1次（如周日）。公共区域保持基本整洁，个人杂物不溢出到公共空间。'});
+  }else{
+    rules.push({icon:'🧹', title:'卫生值日', detail:'至少每2周打扫1次。个人区域异味需自行处理。用过的餐具/外卖盒当天清理，勿堆在公共区域。'});
+  }
+
+  // 4. 物品与空间 (based on 边界感 avg[1] + 驻留度 avg[2])
+  if(avg[1] >= 50){
+    rules.push({icon:'🚧', title:'物品边界', detail:'借用前必须先问，按时归还。私人物品不占用公共过道。晾完的衣物48小时内收走，勿长期占用晾衣杆。食品不放公共区域超过24小时。'});
+  }else{
+    rules.push({icon:'🚧', title:'物品边界', detail:'借用前打招呼即可。贵重物品不外放。大件物品（乐器/健身器材）放置位置需征得舍友同意。'});
+  }
+
+  // 5. 访客与社交 (based on 驻留度 avg[2])
+  if(avg[2] <= 40){
+    rules.push({icon:'🏠', title:'访客与社交', detail:'本舍成员多在宿舍活动。带朋友来访前在群内通知；访客不留宿；22:00后访客离开。集体娱乐活动（打牌/桌游）每周不超过2次。'});
+  }else{
+    rules.push({icon:'🏠', title:'访客与社交', detail:'带朋友来访前在群内通知；访客不留宿；22:00后访客离开。因本舍成员多数早出晚归，大规模社交活动尽量安排在外。'});
+  }
+
+  // 6. 电费 (always)
+  rules.push({icon:'⚡', title:'电费分摊', detail:'默认按人数均摊。如有人长期使用高功率设备（游戏本/台式机/空调），该成员自愿多承担电费的20%。空调温度协商设定（建议夏季26°C/冬季20°C）。'});
+
+  // 7. 矛盾处理 (always)
+  rules.push({icon:'💬', title:'矛盾处理', detail:'出现分歧时，先直接当面沟通；无法解决时宿舍内投票表决，少数服从多数。禁止冷战、背后议论、找辅导员告状作为第一手段。'});
+
+  // 8. 试行期 (always)
+  const trialEnd = new Date();
+  trialEnd.setMonth(trialEnd.getMonth()+1);
+  const dateStr = trialEnd.getFullYear()+'年'+(trialEnd.getMonth()+1)+'月'+trialEnd.getDate()+'日';
+
+  rules.push({icon:'📅', title:'试行期条款', detail:`本公约自全体签署之日起试行1个月（至${dateStr}）。期间如有问题可协商修订；试行期满后不再受理关于舍友匹配的投诉。`});
+
+  // Render
+  let html = '<div style="font-size:12px;color:#94a3b8;margin-bottom:12px">基于以下成员共同特征生成：'+
+    members.map(m=>`<strong>${m.name}</strong>`).join('、')+'</div>';
+  rules.forEach((r,i)=>{
+    html += `<div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:8px">
+      <div style="font-weight:700;color:#a5b4fc;margin-bottom:4px">${r.icon} 第${i+1}条：${r.title}</div>
+      <div style="color:#cbd5e1;font-size:12px;line-height:1.7">${r.detail}</div>
+    </div>`;
+  });
+
+  document.getElementById('agreementRules').innerHTML = html;
+  document.getElementById('agreementSection').style.display = 'block';
+
+  // Acceptance checkboxes
+  document.getElementById('agreementMembers').innerHTML = members.map(m =>
+    `<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:#cbd5e1">
+      <input type="checkbox" class="agreeCheck" onchange="checkAllAgreed()" style="accent-color:#10b981;width:16px;height:16px">
+      ${m.name}
+    </label>`
+  ).join('');
+  document.getElementById('agreementDone').style.display = 'none';
+  document.getElementById('btnAcceptAgreement').style.display = 'inline-block';
+  document.getElementById('agreementSection').scrollIntoView({behavior:'smooth'});
+}
+
+function checkAllAgreed(){
+  const all = document.querySelectorAll('.agreeCheck');
+  const allChecked = Array.from(all).every(cb=>cb.checked);
+  document.getElementById('btnAcceptAgreement').style.opacity = allChecked ? '1' : '0.5';
+  document.getElementById('btnAcceptAgreement').style.pointerEvents = allChecked ? 'auto' : 'none';
+}
+
+function acceptAgreement(){
+  const trialEnd = new Date();
+  trialEnd.setMonth(trialEnd.getMonth()+1);
+  document.getElementById('trialEndDate').textContent =
+    trialEnd.getFullYear()+'年'+(trialEnd.getMonth()+1)+'月'+trialEnd.getDate()+'日';
+  document.getElementById('agreementDone').style.display = 'block';
+  document.getElementById('btnAcceptAgreement').style.display = 'none';
+  document.querySelectorAll('.agreeCheck').forEach(cb=>{cb.disabled=true;cb.checked=true;});
+  document.getElementById('agreementRules').style.opacity = '0.6';
+}
+
+function renderHeatmap(){
+  const n = Math.min(24, students.length);
+  let html = '<div style="display:flex"><div style="min-width:80px;font-size:9px;color:#64748b;line-height:30px">';
+  for(let i=0;i<n;i++) html += students[i].name.substring(0,4)+'<br>';
+  html += '</div><div style="overflow-x:auto"><div style="display:inline-block">';
+  for(let i=0;i<n;i++){
+    html += '<div style="display:flex;height:30px">';
+    for(let j=0;j<n;j++){
+      if(i===j){
+        html += '<div class="heatmap-cell" style="background:#1e293b"></div>';
+      } else {
+        const s = matchMatrix[i][j];
+        let bg;
+        if(s>=80) bg = `rgba(16,185,129,${0.2+(s-80)/100})`;
+        else if(s>=60) bg = `rgba(245,158,11,${0.2+(s-60)/200})`;
+        else bg = `rgba(239,68,68,${0.2+(60-s)/300})`;
+        html += `<div class="heatmap-cell" style="background:${bg}" title="${students[i].name}-${students[j].name}: ${s}%">${s}</div>`;
+      }
+    }
+    html += '</div>';
+  }
+  html += '</div></div></div>';
+  document.getElementById('heatmapContainer').innerHTML = html;
+}
+
+function renderQualityChart(fairMode, rooms){
+  const ctx = document.getElementById('qualityChart').getContext('2d');
+  if(qualityChartInst) qualityChartInst.destroy();
+
+  // Compute per-room stats
+  const roomLabels = rooms.map((_,i)=>`${i+1}号房`);
+  const roomAvgs = rooms.map(r=>{
+    let ss=[];for(let a=0;a<r.members.length;a++)for(let b=a+1;b<r.members.length;b++)ss.push(matchMatrix[r.members[a]][r.members[b]]);
+    return ss.length>0?Math.round(ss.reduce((a,b)=>a+b,0)/ss.length):0;
+  });
+  const roomMins = rooms.map(r=>{
+    let ss=[];for(let a=0;a<r.members.length;a++)for(let b=a+1;b<r.members.length;b++)ss.push(matchMatrix[r.members[a]][r.members[b]]);
+    return ss.length>0?Math.round(Math.min(...ss)):0;
+  });
+
+  qualityChartInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: roomLabels,
+      datasets: [
+        {label:'平均匹配分',data:roomAvgs,backgroundColor:'rgba(129,140,248,0.6)',borderColor:'#818cf8',borderWidth:1},
+        {label:'最低匹配分',data:roomMins,backgroundColor:'rgba(245,158,11,0.6)',borderColor:'#f59e0b',borderWidth:1}
+      ]
+    },
+    options: {
+      responsive:true,maintainAspectRatio:false,
+      scales:{
+        y:{beginAtZero:true,max:100,grid:{color:'rgba(51,65,85,0.3)'},ticks:{color:'#94a3b8'}},
+        x:{ticks:{color:'#94a3b8'}}
+      },
+      plugins:{
+        legend:{labels:{color:'#cbd5e1',usePointStyle:true,padding:20}},
+        tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.raw+'%'}}
+      }
+    }
+  });
+}
+
+// ============ INIT ============
+document.getElementById('fairMode').addEventListener('change', function(){
+  document.getElementById('modeLabel').textContent = this.checked ? '公平优先 (Maximin)' : '贪婪匹配 (Greedy)';
+  document.getElementById('modeDesc').textContent = this.checked ?
+    '稀有学生优先保留其最佳匹配对象，最大化全局最低匹配分' :
+    '按匹配得分从高到低依次分配，可能导致稀有学生被"挤出"';
+});
+
+document.getElementById('studentCount').addEventListener('input', function(){
+  document.getElementById('studentCountVal').textContent = this.value;
+});
+
+// ============ NOISE MATRIX INIT ============
+const NOISE_BEHAVIORS = [
+  {id:'gaming', label:'打电子游戏（每周≥4次）'},
+  {id:'voice', label:'游戏中使用语音开麦'},
+  {id:'mech_kb', label:'使用机械键盘（青轴/茶轴等）'},
+  {id:'clicky_mouse', label:'使用有声鼠标（非静音）'},
+  {id:'phone_call', label:'煲电话粥/长时间语音通话'},
+  {id:'speaker', label:'在宿舍外放音频（音乐/视频/直播）'},
+  {id:'card_game', label:'打牌或集体娱乐活动'}
+];
+const FREQ_OPTIONS = [
+  {val:0, label:'从不'},
+  {val:1, label:'偶尔'},
+  {val:2, label:'经常'},
+  {val:3, label:'每天'}
+];
+
+function initNoiseMatrix(){
+  const tbody = document.getElementById('noiseMatrix');
+  let html = '';
+  NOISE_BEHAVIORS.forEach((b,i)=>{
+    html += `<tr style="border-bottom:1px solid #1e293b">
+      <td style="padding:8px;color:#cbd5e1;font-size:12px">${b.label}</td>`;
+    FREQ_OPTIONS.forEach(f=>{
+      html += `<td style="text-align:center;padding:4px">
+        <label style="cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <input type="radio" name="noise_${i}" value="${f.val}" required
+            onchange="onNoiseChange(${i},${f.val})" style="accent-color:#818cf8">
+        </label></td>`;
+    });
+    html += '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+function onNoiseChange(rowIdx, val){
+  // Show/hide game type when gaming row (row 0) is 经常(2) or 每天(3)
+  if(rowIdx === 0){
+    const gameGroup = document.getElementById('gameTypeGroup');
+    gameGroup.style.display = (val >= 2) ? 'block' : 'none';
+    if(val < 2){
+      // Clear game type selections when hidden
+      document.querySelectorAll('input[name="game_type"]').forEach(cb=>cb.checked=false);
+    }
+  }
+}
+
+// Generate initial students
+regenerateStudents();
+initNoiseMatrix();
+updateRankDisplay();
+prefillDefaults();
+
+// ============ PREFILL DEFAULTS FOR DEMO ============
+function prefillDefaults(){
+  // A. 基本信息
+  setRadio('grade','3');            // 大三
+  setRadio('gender','male');
+  setRadio('origin','urban');
+  setRadio('only_child','no');      // 非独生 → 显示兄弟姐妹题
+
+  // Conditional: sibling harmony
+  document.getElementById('siblingGroup').style.display = 'block';
+  setSelect('sibling_harmony','3'); // 正常相处
+
+  // B. 作息节律
+  setRadio('chronotype','OO');      // 偏夜型
+  setRadio('sleep_range','C');      // 23:30-24:00 正常型
+  document.querySelector('input[name="bedtime"]').value = '23:45';
+  document.querySelector('input[name="waketime"]').value = '07:30';
+  setRadio('sleep_variance','B');   // ±30分钟
+
+  // C. 噪音行为 — dynamically generated radios (7 rows, 0-based names noise_0..noise_6)
+  for(let i=0;i<7;i++){
+    const val = (i===0||i===1) ? 1 : 0; // gaming=偶尔, voice=偶尔, rest=从不
+    setRadio('noise_'+i, String(val));
+  }
+  setRadio('snore','none');
+  setRadio('smoking','reject');
+
+  // D. 环境与边界
+  setRadio('noise_sens','2');       // 比较敏感
+  setSelect('sleep_sound','3');     // 正常睡眠
+  // special: 无特殊需求
+  document.querySelector('input[name="special"][value="none"]').checked = true;
+  setSelect('boundary','3');        // 借用前都会问
+  setSelect('hygiene','3');         // 保持个人区域整洁
+
+  // E. 行为模式
+  setRadio('dorm_stay','B');        // 4-8h
+  setSelect('energy','3');          // 正常精力
+  setRadio('dorm_exp','yes');       // 有住校经历 → 显示月数
+  document.getElementById('dormMonthsGroup').style.display = 'block';
+  document.querySelector('input[name="dorm_months"]').value = '24';
+  setRadio('study_impact','3');     // 无明显影响
+
+  // F. 人际风格
+  setRadio('conflict_style','D');   // 直球沟通
+  setSelect('social','3');          // 正常社交
+  setSelect('personality_16','IOTD'); // 深夜思考 → INTJ
+
+  // G. 匹配偏好
+  rankOrder = ['habit','personality','schedule','study','interest','economy'];
+  updateRankDisplay();
+  // stay_willing range default is already 3
+
+  // Update progress
+  document.getElementById('progressFill').style.width = '40%';
+  document.getElementById('progressText').textContent = '💡 已预填演示数据，可直接点击下方按钮生成画像';
+}
+
+function setRadio(name, value){
+  const el = document.querySelector(`input[name="${name}"][value="${value}"]`);
+  if(el) el.checked = true;
+}
+function setSelect(name, value){
+  const el = document.querySelector(`select[name="${name}"]`);
+  if(el) el.value = value;
+}
+</script>
+
+</body>
+</html>
