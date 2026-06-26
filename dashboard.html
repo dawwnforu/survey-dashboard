@@ -147,7 +147,22 @@ canvas{width:100%!important;height:100%!important}
 <div class="chart-wrap short"><canvas id="improveChart"></canvas></div>
 </div>
 
-<div class="section-title" id="section-analysis">📊 数据分析与发现</div>
+  </div>
+
+  <div class="section-title">🌙  入睡时间分布：午夜后睡觉是大学生常态</div>
+
+  <div class="grid-2">
+  <div class="card"><h3>通常入睡时间分布（N=110，全样本）</h3><div class="chart-wrap"><canvas id="bedtimeDistChart"></canvas></div></div>
+  <div class="card"><h3>焦虑与被吵醒 × 入睡时段（N=89）</h3><div class="chart-wrap"><canvas id="bedtimeAnxietyChart"></canvas></div></div>
+  </div>
+
+  <div class="insight-box" style="margin-bottom:20px;font-size:13px;line-height:1.9;">
+  <strong>🌙 午夜后睡觉是常态，23:00入睡已是"偏早型"：</strong>全样本中<strong style="color:#f87171">51.8%的学生00:00之后入睡</strong>，仅<strong>1.8%在23:00前入睡</strong>。在大学生作息生态中，23:00入睡已经属于少数派"偏早型"。<br>
+  <strong style="color:#f59e0b">⚠ 23:00-23:59入睡者是最大的隐性受害者：</strong>这一组周均被吵醒<strong style="color:#f87171">3.12次</strong>（所有时段最高）、焦虑<strong style="color:#f87171">2.92天</strong>（所有时段最高），而00:00-00:59入睡者被吵醒仅2.28次、焦虑2.24天。当一个宿舍半数以上的人午夜后才准备睡觉，那些23:00放下手机试图入睡的人，几乎不可避免地会被键盘声、洗漱声和舍友交谈反复惊醒。<br>
+  <strong style="color:#10b981">▶ 与L/O人格维度相互印证：</strong>Q43宿舍人格量表中，L晨鸟型焦虑3.4天 vs O夜猫型1.7天（d=0.77**）。实际入睡时间数据和人格自评数据从两个角度指向同一结论——<strong>不健康作息的普遍化，让早睡早起学生的集体住宿处境被系统性牺牲了</strong>。
+  </div>
+
+  <div class="section-title" id="section-analysis">📊 数据分析与发现</div>
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
 <!-- 左栏：分析卡片 -->
@@ -687,136 +702,357 @@ Q39中46%的农村生源学生选择"需要安静学习环境"，而城镇仅15%
 </div>
 
 
-<div class="section-title" id="section-hypo">📋 研究假设检验（H1-H11）</div>
+<div class="section-title" id="section-hypo">📋 研究假设检验（七大理论框架 × 11项假设）</div>
 
-<!-- H1 -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-<div class="card"><h3>H1 夜猫+深夜娱乐叠加 → 冲突</h3>
-<div class="insight-box" style="font-size:12px;line-height:1.6;">
-<strong>理论：</strong>生物钟错位与环境压力理论<br>
-<strong>操作：</strong>Q30(晚睡)+Q34(22-6点游戏)叠加 → Q15(冲突次数)<br>
-<span style="color:#ef4444"><strong>✗ 不支持。</strong></span>叠加组冲突0.57次/月 vs 非叠加组0.65次(p=0.85)。<strong>但反向发现：</strong>叠加组焦虑反而显著更低(1.78 vs 2.93天, p=0.05)和被吵醒更少(1.96 vs 3.00次, p=0.06)——夜猫+深夜娱乐者自身入睡晚，对噪音不敏感，<strong>早鸟型才是真正的脆弱群体</strong>。
-</div></div>
-<div class="card"><h3>叠加组 vs 非叠加组（焦虑&被吵醒）</h3>
-<div class="chart-wrap" style="height:160px"><canvas id="hypo1Chart"></canvas></div></div>
-</div>
+	<!-- Theory-Hypothesis overview map -->
+	<div class="card" style="margin-bottom:16px">
+	<h3>理论框架 → 假设映射</h3>
+	<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:12px;">
+	<div class="insight-box" style="margin-top:0;"><strong style="color:#818cf8">🧬 性格差异理论（基于MBTI）</strong><br>H1(O→冲突) · H2(E/I→公平感) · H3(Z→学习目标) · H4(D→沟通)</div>
+	<div class="insight-box" style="margin-top:0;"><strong style="color:#06b6d4">🌙 生物钟错位与环境压力理论</strong><br>H1(作息错位) · H6(游戏+晚睡+噪音→被吵醒→焦虑)</div>
+	<div class="insight-box" style="margin-top:0;"><strong style="color:#10b981">⚔️ 冲突管理理论</strong><br>H4(直球沟通) · H8(沟通→满意度)</div>
+	<div class="insight-box" style="margin-top:0;"><strong style="color:#f59e0b">🏠 空间心理学与资源竞争理论</strong><br>H5(硬件→公平感→关系)</div>
+	<div class="insight-box" style="margin-top:0;"><strong style="color:#ec4899">🌱 个体社会化经验与环境适应理论</strong><br>H9(住校经验→适应缓冲)</div>
+	<div class="insight-box" style="margin-top:0;"><strong style="color:#f97316">🆘 社会支持系统缺失理论</strong><br>H11(正式求助渠道失效)</div>
+	<div class="insight-box" style="margin-top:0;grid-column:1/-1;"><strong style="color:#8b5cf6">🎯 特殊需求</strong><br>H7(生活习惯+学习目标 d=1.31**) · H10(相同社会文化)</div>
+	</div>
+	</div>
 
-<!-- H2 -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-<div class="card"><h3>H2 E/I(社交能量) → 公平感(Q29)</h3>
-<div class="insight-box" style="font-size:12px;line-height:1.6;">
-<strong>理论：</strong>性格差异理论+公平理论<br>
-<strong>操作：</strong>Q43首字母拆分E/I → Q29公平感<br>
-<span style="color:#ef4444"><strong>✗ 不支持。</strong></span>E型1.18 vs I型1.29, t=-0.83, p=0.41, d=-0.27。方向与假设相反且效应量小。<strong>E/I维度在全部假设中效度最弱</strong>，建议从分配系统中移除。详见「宿舍人格因素」板块。
-</div></div>
-<div class="card"><h3>E/I × 公平感（已在交叉检验详述）</h3>
-<div class="chart-wrap" style="height:160px"><canvas id="hypo2Chart"></canvas></div></div>
-</div>
+	<!-- ===== 一、性格差异理论（基于MBTI） ===== -->
+	<div class="section-title" style="font-size:16px;margin:20px 0 6px;color:#a5b4fc">一、性格差异理论（基于MBTI）—— H1 H2 H3 H4</div>
+	<div class="insight-box" style="margin-bottom:12px;font-size:12px;"><strong>核心命题：</strong>E/I、L/O、D/Z、T/M四维度人格差异系统性地影响宿舍互动模式——E型边界感低于I型，O型提高冲突可能，Z型选择性在乎学习环境，D型理论上更愿主动沟通（但数据未支持人格→行为的直接路径）。</div>
 
-<!-- H3 -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-<div class="card"><h3>H3 佛系型(Z) → 更重视"学习目标一致"</h3>
-<div class="insight-box" style="font-size:12px;line-height:1.6;">
-<strong>理论：</strong>性格差异理论+P-E匹配理论<br>
-<strong>操作：</strong>Q43第四位Z vs 非Z → Q41"学习目标一致"位次(越小越重视)<br>
-<span style="color:#10b981"><strong>✓ 支持。</strong></span>Z佛系学习目标位次2.75 vs 非Z 3.94, <strong>t=-2.27, p=0.033*, d=0.87</strong>(大效应)。Z型还更重视生活习惯(1.72 vs 2.26, p=0.09†)。佛系型并非"什么都无所谓"——他们<strong>对学习环境的一致性有明确需求</strong>，建议在分配时标注学习目标偏好。
-</div></div>
-<div class="card"><h3>Z佛系 vs 非Z：Q41因素位次对比</h3>
-<div class="chart-wrap" style="height:160px"><canvas id="hypo3Chart"></canvas></div></div>
-</div>
+	<!-- H2 -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+	<div class="card"><h3>H2 E/I(社交能量) → 公平感(Q29)</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>理论：</strong>性格差异理论+公平理论<br>
+	<strong>操作：</strong>Q43首字母拆分E/I → Q29公平感<br>
+	<span style="color:#ef4444"><strong>✗ 不支持。</strong></span>E型1.18 vs I型1.29, t=-0.83, p=0.41, d=-0.27。方向与假设相反且效应量小。<strong>E/I维度在全部假设中效度最弱</strong>，建议从分配系统中移除。详见「宿舍人格因素」板块。
+	</div></div>
+	<div class="card"><h3>E/I × 公平感（已在交叉检验详述）</h3>
+	<div class="chart-wrap" style="height:160px"><canvas id="hypo2Chart"></canvas></div></div>
+	</div>
 
-<!-- H4 + H8 + H10 merged (all about communication) -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-<div class="card"><h3>H4/H8/H10 冲突沟通方式的多重效应</h3>
-<div class="insight-box" style="font-size:12px;line-height:1.6;">
-<strong>H4 D直球→主动沟通→关系满意度：</strong><br>
-<span style="color:#ef4444">D→沟通路径不成立</span>(D型33%直接 vs Z型43%, Fisher p=1.0)。D/Z人格维度不能预测实际沟通行为——<strong>宿舍情境压力覆盖了人格偏好</strong>。<br>
-<span style="color:#10b981"><strong>H8 主动沟通→关系+重选室友：✓ 支持。</strong></span>主动者关系2.55 vs 非主动2.88(p=0.032*), 重选意愿2.66 vs 3.26(p=0.019*)。但注意可能是<strong>关系好才愿沟通</strong>(反向因果)。<br>
-<strong>H10 非主动→减少沟通次数→降低幸福感：</strong><span style="color:#ef4444">中介链断裂。</span>非主动沟通并不减少实际沟通次数(t=0.14, p=0.89)，但沟通次数本身与重选意愿正相关(rho=0.32**)。
-</div></div>
-<div class="card"><h3>沟通方式 × 舍友关系 & 重选室友意愿</h3>
-<div class="chart-wrap" style="height:160px"><canvas id="hypo4Chart"></canvas></div></div>
-</div>
+	<!-- H1 (under 性格差异, with cross-ref to 生物钟错位) -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+	<div class="card"><h3>H1 夜猫型(O) × 深夜娱乐行为 → 冲突频率 ↑</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>理论：</strong>性格差异理论（O维度）+ 生物钟错位与环境压力理论<br>
+	<strong>操作：</strong>Q30(晚睡)+Q43(O型)+Q34(22-6点游戏)叠加 → Q15(冲突次数)<br>
+	<span style="color:#ef4444"><strong>✗ 不支持。</strong></span>叠加组冲突0.57次/月 vs 非叠加组0.65次(p=0.85)。<strong>但反向发现：</strong>叠加组焦虑反而显著更低(1.78 vs 2.93天, p=0.05)和被吵醒更少(1.96 vs 3.00次, p=0.06)——夜猫+深夜娱乐者自身入睡晚，对噪音不敏感，<strong>早鸟型才是真正的脆弱群体</strong>。
+	</div></div>
+	<div class="card"><h3>叠加组 vs 非叠加组（焦虑&被吵醒）</h3>
+	<div class="chart-wrap" style="height:160px"><canvas id="hypo1Chart"></canvas></div></div>
+	</div>
 
-<!-- H5 -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-<div class="card"><h3>H5 硬件满意度 → 公平感 → 舍友关系</h3>
-<div class="insight-box" style="font-size:12px;line-height:1.6;">
-<strong>理论：</strong>空间心理学与资源竞争理论<br>
-<strong>操作：</strong>Q27硬件满意度 → Q29公平感 → Q21舍友关系<br>
-<span style="color:#10b981"><strong>✓ 中介链成立。</strong></span>Q27→Q29: rho=-0.21*(p=0.025), Q29→Q21: rho=0.32**(p=0.001)。硬件差→公平感恶化→关系下降。<strong>但</strong>Q27→Q21直接路径不显著(rho=-0.10, p=0.31)，说明公平感是<strong>完全中介</strong>。Q10(调宿念头)调节效应不显著——硬件满意度在各调宿念头等级间无差异。
-</div></div>
-<div class="card"><h3>硬件→公平感→关系 中介路径</h3>
-<div class="chart-wrap" style="height:160px"><canvas id="hypo5Chart"></canvas></div></div>
-</div>
+	<!-- H3 -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+	<div class="card"><h3>H3 佛系型(Z) → 更重视"学习目标一致"</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>理论：</strong>性格差异理论+P-E匹配理论<br>
+	<strong>操作：</strong>Q43第四位Z vs 非Z → Q41"学习目标一致"位次<br>
+	<span style="color:#10b981"><strong>✓ 支持。</strong></span>Z佛系学习目标位次2.75 vs 非Z 3.94, <strong>t=-2.27, p=0.033*, d=0.87</strong>(大效应)。Z型还更重视生活习惯(1.72 vs 2.26, p=0.09†)。佛系型并非"什么都无所谓"——他们<strong>对学习环境的一致性有明确需求</strong>，建议在分配时标注学习目标偏好。
+	</div></div>
+	<div class="card"><h3>Z佛系 vs 非Z：Q41因素位次对比</h3>
+	<div class="chart-wrap" style="height:160px"><canvas id="hypo3Chart"></canvas></div></div>
+	</div>
 
-<!-- H6 -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-<div class="card"><h3>H6 游戏+晚睡+噪音敏感 → 被吵醒 → 焦虑</h3>
-<div class="insight-box" style="font-size:12px;line-height:1.6;">
-<strong>理论：</strong>生物钟错位与环境压力理论<br>
-<strong>操作：</strong>Q32+Q30+Q40(风险因子) → Q18(被吵醒) → Q13(焦虑)<br>
-<span style="color:#f59e0b"><strong>△ 中介链部分成立。</strong></span>被吵醒→焦虑路径极强(rho=0.72**, p&lt;0.001)。<strong>但</strong>高风险→被吵醒不显著(d=-0.31, p=0.11)且<strong>方向相反</strong>——高风险组被吵醒2.46次 vs 低风险3.20次。原因同H1：晚睡+游戏者自身噪音容忍度高，早鸟型才是噪音的真正受害者。应将<strong>早鸟+噪音敏感</strong>重新定义为风险组合。
-</div></div>
-<div class="card"><h3>风险因子组合 × 被吵醒次数</h3>
-<div class="chart-wrap" style="height:160px"><canvas id="hypo6Chart"></canvas></div></div>
-</div>
+	<!-- ===== 二、生物钟错位与环境压力理论 ===== -->
+	<div class="section-title" style="font-size:16px;margin:20px 0 6px;color:#a5b4fc">二、生物钟错位与环境压力理论 —— H1 H6</div>
+	<div class="insight-box" style="margin-bottom:12px;font-size:12px;"><strong>核心命题：</strong>游戏、晚睡、噪音敏感三者叠加理论上应显著提高焦虑和矛盾冲突。但H1和H6的数据共同揭示了一个方向性反转——<strong style="color:#f87171">高风险组（夜猫+游戏者）反而焦虑更低、被吵醒更少</strong>，真正的受害者是早鸟型。该理论的原始方向需要修正：不是"夜猫制造矛盾"，而是"早鸟被夜猫吵醒"。</div>
 
-<!-- H7 -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-<div class="card"><h3>H7 有特殊需求 → 更重视生活习惯&学习目标</h3>
-<div class="insight-box" style="font-size:12px;line-height:1.6;">
-<strong>理论：</strong>特殊需求理论<br>
-<strong>操作：</strong>Q39(有A/B/C/D任一需求 vs 选E无需求) → Q41"生活习惯"+"学习目标"位次<br>
-<span style="color:#10b981"><strong>✓ 强烈支持。</strong></span>有需求者"生活习惯"位次1.83 vs 无需求3.12, <strong>t=-3.55, p&lt;0.001**, d=1.31(大效应)</strong>。"学习目标"位次3.24 vs 4.00, d=0.63†。<strong>有特殊需求的学生是"高要求群体"</strong>——分配系统应重点关注他们的需求标注。
-</div></div>
-<div class="card"><h3>有特殊需求 vs 无：Q41因素位次</h3>
-<div class="chart-wrap" style="height:160px"><canvas id="hypo7Chart"></canvas></div></div>
-</div>
+	<!-- H6 -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+	<div class="card"><h3>H6 游戏+晚睡+噪音敏感 → 被吵醒 → 焦虑（核心链条）</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>理论：</strong>生物钟错位与环境压力理论<br>
+	<strong>操作：</strong>Q32+Q30+Q40(风险因子) → Q18(被吵醒) → Q13(焦虑)<br>
+	<span style="color:#f59e0b"><strong>△ 中介链部分成立。</strong></span>被吵醒→焦虑路径极强(rho=0.72**, p&lt;0.001)。<strong>但</strong>高风险→被吵醒不显著(d=-0.31, p=0.11)且<strong>方向相反</strong>——高风险组被吵醒2.46次 vs 低风险3.20次。原因同H1：晚睡+游戏者自身噪音容忍度高，早鸟型才是噪音的真正受害者。应将<strong>早鸟+噪音敏感</strong>重新定义为风险组合。
+	</div></div>
+	<div class="card"><h3>风险因子组合 × 被吵醒次数</h3>
+	<div class="chart-wrap" style="height:160px"><canvas id="hypo6Chart"></canvas></div></div>
+	</div>
 
-<!-- H9 -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-<div class="card"><h3>H9 兄弟姐妹和睦+住校经验 → 大学宿舍适应</h3>
-<div class="insight-box" style="font-size:12px;line-height:1.6;">
-<strong>理论：</strong>个体社会化经验与环境适应理论<br>
-<strong>操作：</strong>Q7(兄弟姐妹和睦)+Q9(累计住校月数) → Q15(冲突)+Q21(关系)<br>
-<span style="color:#fbbf24"><strong>△ 边缘支持。</strong></span>兄弟姐妹和睦→关系: rho=-0.21†(p=0.09); 住校月数→关系: rho=-0.18†(p=0.06)。效应量较小(均<0.25)但方向一致。<strong>住校经验有保护作用但有限</strong>——建议作为辅助参考而非主要分配因子。兄弟姐妹关系与大学舍友关系的关联值得进一步探索。
-</div></div>
-<div class="card"><h3>住校经验 × 宿舍适应指标</h3>
-<div class="chart-wrap" style="height:160px"><canvas id="hypo9Chart"></canvas></div></div>
-</div>
+	<!-- ===== 三、冲突管理理论 ===== -->
+	<div class="section-title" style="font-size:16px;margin:20px 0 6px;color:#a5b4fc">三、冲突管理理论 —— H4 H8</div>
+	<div class="insight-box" style="margin-bottom:12px;font-size:12px;"><strong>核心命题：</strong>主动沟通与住宿满意度正相关——"说出来的矛盾反而好得快"。但H4揭示人格倾向（D型）并不能预测实际沟通行为——宿舍情境压力覆盖了人格偏好，人格→行为的直接路径不成立。</div>
 
-<!-- H11 -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
-<div class="card"><h3>H11 正式渠道求助 vs 心理支持需求（描述性）</h3>
-<div class="insight-box" style="font-size:12px;line-height:1.6;">
-<strong>理论：</strong>社会支持系统缺失理论<br>
-<strong>对比：</strong>Q20中选择"向辅导员/阿姨求助"比例 vs Q46中"心理支持与调解服务"需求比例<br>
-<span style="color:#f87171"><strong>⚠ 严重缺口。</strong></span>Q20中实际选择正式渠道求助的比例为<strong>0%</strong>(Q20仅有直接沟通38人/第三方17人/忍耐55人, 无辅导员选项)。而Q46中心理支持需求为<strong>21.1%</strong>(12/57)。21个百分点的供需缺口说明：<strong>学生知道有需求，但不知道或不愿通过正式渠道求助</strong>——现有的辅导员/调解机制完全未被激活。
-</div></div>
-<div class="card"><h3>正式求助 vs 心理支持需求 缺口</h3>
-<div class="chart-wrap" style="height:160px"><canvas id="hypo11Chart"></canvas></div></div>
-</div>
+	<!-- H4 + H8 + H10 merged (all about communication) -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+	<div class="card"><h3>H4/H8 冲突沟通方式的多重效应</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>H4 D直球→主动沟通→关系满意度：</strong><br>
+	<span style="color:#ef4444">D→沟通路径不成立</span>(D型33%直接 vs Z型43%, Fisher p=1.0)。D/Z人格维度不能预测实际沟通行为——<strong>宿舍情境压力覆盖了人格偏好</strong>。<br>
+	<span style="color:#10b981"><strong>H8 主动沟通→关系+重选室友：✓ 支持。</strong></span>主动者关系2.55 vs 非主动2.88(p=0.032*), 重选意愿2.66 vs 3.26(p=0.019*)。但注意可能是<strong>关系好才愿沟通</strong>(反向因果)。<br>
+	<strong style="color:#94a3b8">H10（相同社会文化→舍友选择）已移至特殊需求板块 ↓</strong>
+	</div></div>
+	<div class="card"><h3>沟通方式 × 舍友关系 & 重选室友意愿</h3>
+	<div class="chart-wrap" style="height:160px"><canvas id="hypo4Chart"></canvas></div></div>
+	</div>
 
-<!-- Summary card -->
-<div class="card" style="margin-bottom:12px">
-<h3>📊 11项假设检验汇总</h3>
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:11px;">
-<div class="insight-box" style="margin-top:0;"><span style="color:#10b981"><strong>✓ H3支持</strong></span><br>Z佛系更重视学习目标(d=0.87*)</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#10b981"><strong>✓ H5支持</strong></span><br>硬件→公平感→关系(完全中介)</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#10b981"><strong>✓ H7强烈支持</strong></span><br>有特殊需求→重视生活习惯(d=1.31**)</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#10b981"><strong>✓ H8支持</strong></span><br>主动沟通→关系(d=-0.45*)+重选(d=-0.49*)</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#fbbf24"><strong>△ H9边缘</strong></span><br>住校经验→关系(rho=-0.18†)</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#f87171"><strong>⚠ H11缺口</strong></span><br>求助0% vs 需求21%(缺21pp)</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#ef4444"><strong>✗ H1不支持</strong></span><br>夜猫反而焦虑更低(反向发现)</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#ef4444"><strong>✗ H2不支持</strong></span><br>E/I不预测公平感</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#ef4444"><strong>✗ H4不支持</strong></span><br>D不预测沟通行为</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#ef4444"><strong>✗ H6不支持</strong></span><br>风险因子不预测被吵醒(方向反)</div>
-<div class="insight-box" style="margin-top:0;"><span style="color:#ef4444"><strong>✗ H10不支持</strong></span><br>非主动沟通不减少沟通次数</div>
-</div>
-</div>
+	<!-- ===== 四、空间心理学与资源竞争理论 ===== -->
+	<div class="section-title" style="font-size:16px;margin:20px 0 6px;color:#a5b4fc">四、空间心理学与资源竞争理论 —— H5</div>
 
-</div>
+	<!-- H5 -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+	<div class="card"><h3>H5 硬件满意度 → 公平感 → 舍友关系</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>理论：</strong>空间心理学与资源竞争理论<br>
+	<strong>操作：</strong>Q27硬件满意度 → Q29公平感 → Q21舍友关系<br>
+	<span style="color:#10b981"><strong>✓ 中介链成立。</strong></span>Q27→Q29: rho=-0.21*(p=0.025), Q29→Q21: rho=0.32**(p=0.001)。硬件差→公平感恶化→关系下降。<strong>但</strong>Q27→Q21直接路径不显著(rho=-0.10, p=0.31)，说明公平感是<strong>完全中介</strong>。Q10(调宿念头)调节效应不显著——硬件满意度在各调宿念头等级间无差异。
+	</div></div>
+	<div class="card"><h3>硬件→公平感→关系 中介路径</h3>
+	<div class="chart-wrap" style="height:160px"><canvas id="hypo5Chart"></canvas></div></div>
+	</div>
+
+	<!-- ===== 五、个体社会化经验与环境适应理论 ===== -->
+	<div class="section-title" style="font-size:16px;margin:20px 0 6px;color:#a5b4fc">五、个体社会化经验与环境适应理论 —— H9</div>
+
+	<!-- H9 -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+	<div class="card"><h3>H9 兄弟姐妹和睦+住校经验 → 大学宿舍适应</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>理论：</strong>个体社会化经验与环境适应理论<br>
+	<strong>操作：</strong>Q7(兄弟姐妹和睦)+Q9(累计住校月数) → Q15(冲突)+Q21(关系)<br>
+	<span style="color:#fbbf24"><strong>△ 边缘支持。</strong></span>兄弟姐妹和睦→关系: rho=-0.21†(p=0.09); 住校月数→关系: rho=-0.18†(p=0.06)。效应量较小(均<0.25)但方向一致。<strong>住校经验有保护作用但有限</strong>——建议作为辅助参考而非主要分配因子。
+	</div></div>
+	<div class="card"><h3>住校经验 × 宿舍适应指标</h3>
+	<div class="chart-wrap" style="height:160px"><canvas id="hypo9Chart"></canvas></div></div>
+	</div>
+
+	<!-- ===== 六、特殊需求 ===== -->
+	<div class="section-title" style="font-size:16px;margin:20px 0 6px;color:#a5b4fc">六、特殊需求 —— H7 H10</div>
+
+	<!-- H7 -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+	<div class="card"><h3>H7 有特殊需求 → 更重视生活习惯&学习目标</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>理论：</strong>特殊需求理论<br>
+	<strong>操作：</strong>Q39(有A/B/C/D任一需求 vs 选E无需求) → Q41"生活习惯"+"学习目标"位次<br>
+	<span style="color:#10b981"><strong>✓ 强烈支持（全假设中效应量最大）。</strong></span>有需求者"生活习惯"位次1.83 vs 无需求3.12, <strong>t=-3.55, p&lt;0.001**, d=1.31(大效应)</strong>。"学习目标"位次3.24 vs 4.00, d=0.63†。<strong>有特殊需求的学生是"高要求群体"</strong>——分配系统应重点关注他们的需求标注。
+	</div></div>
+	<div class="card"><h3>有特殊需求 vs 无：Q41因素位次</h3>
+	<div class="chart-wrap" style="height:160px"><canvas id="hypo7Chart"></canvas></div></div>
+	</div>
+
+	<!-- H10 -->
+	<div class="card" style="margin-bottom:12px"><h3>H10 相同社会文化 → 选择舍友的重要参考因素</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>理论：</strong>特殊需求理论<br>
+	<strong>操作：</strong>Q28(舍友间差异感知) + Q39(特殊需求多选) 中文化/地域维度的交叉分析<br>
+	<span style="color:#94a3b8"><strong>定性发现。</strong></span>Q28中34%的学生感知到"地域文化差异"（仅次于生活习惯76%和学习目标68%）；Q39中宗教信仰/饮食需求占13.6%。相同社会文化背景在舍友选择中被视为<strong>降低隐性摩擦的"安全垫"</strong>——文化同质性减少了需要主动沟通的场景，但并非分配系统的最高优先级因子。
+	</div></div>
+
+	<!-- ===== 七、社会支持系统缺失理论 ===== -->
+	<div class="section-title" style="font-size:16px;margin:20px 0 6px;color:#a5b4fc">七、社会支持系统缺失理论 —— H11</div>
+
+	<!-- H11 -->
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
+	<div class="card"><h3>H11 正式渠道求助 vs 心理支持需求（最具冲击力）</h3>
+	<div class="insight-box" style="font-size:12px;line-height:1.6;">
+	<strong>理论：</strong>社会支持系统缺失理论<br>
+	<strong>对比：</strong>Q20中选择"向辅导员/阿姨求助"比例 vs Q46中"心理支持与调解服务"需求比例<br>
+	<span style="color:#f87171"><strong>⚠ 严重缺口。</strong></span>Q20中实际选择正式渠道求助的比例为<strong>0%</strong>(Q20仅有直接沟通38人/第三方17人/忍耐55人, 无辅导员选项)。而Q46中心理支持需求为<strong>21.1%</strong>(12/57)。21个百分点的供需缺口说明：<strong>学生知道有需求，但不知道或不愿通过正式渠道求助</strong>——现有的辅导员/调解机制完全未被激活。
+	</div></div>
+	<div class="card"><h3>正式求助 vs 心理支持需求 缺口</h3>
+	<div class="chart-wrap" style="height:160px"><canvas id="hypo11Chart"></canvas></div></div>
+	</div>
+
+	<!-- Summary card: reorganized by theory group -->
+	<div class="card" style="margin-bottom:12px">
+	<h3>📊 11项假设检验汇总（按理论框架分组）</h3>
+	<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:11px;">
+	<div style="background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.15);border-radius:8px;padding:8px;">
+	<strong style="color:#818cf8">🧬 性格差异理论</strong><br>
+	<span style="color:#ef4444">✗ H2</span> E/I不预测公平感 |
+	<span style="color:#ef4444">✗ H1</span> O型反而焦虑更低(反向) |
+	<span style="color:#10b981">✓ H3</span> Z→学习目标(d=0.87*) |
+	<span style="color:#ef4444">✗ H4</span> D不预测沟通
+	</div>
+	<div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.15);border-radius:8px;padding:8px;">
+	<strong style="color:#06b6d4">🌙 生物钟错位与环境压力</strong><br>
+	<span style="color:#ef4444">✗ H1</span> 叠加不增加冲突 |
+	<span style="color:#f59e0b">△ H6</span> 中介链部分成立(方向反)
+	</div>
+	<div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:8px;">
+	<strong style="color:#10b981">⚔️ 冲突管理理论</strong><br>
+	<span style="color:#ef4444">✗ H4</span> D→沟通路径断裂 |
+	<span style="color:#10b981">✓ H8</span> 主动沟通→关系↑(p=0.032*)
+	</div>
+	<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:8px;">
+	<strong style="color:#f59e0b">🏠 空间心理学与资源竞争</strong><br>
+	<span style="color:#10b981">✓ H5</span> 硬件→公平感→关系(完全中介)
+	</div>
+	<div style="background:rgba(236,72,153,.06);border:1px solid rgba(236,72,153,.15);border-radius:8px;padding:8px;">
+	<strong style="color:#ec4899">🌱 个体社会化经验</strong><br>
+	<span style="color:#fbbf24">△ H9</span> 住校经验→关系(rho=-0.18†)
+	</div>
+	<div style="background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.15);border-radius:8px;padding:8px;">
+	<strong style="color:#8b5cf6">🎯 特殊需求</strong><br>
+	<span style="color:#10b981"><strong>✓ H7</strong></span> 生活习惯(d=1.31**) · 学习目标(d=0.63†) |
+	<span style="color:#94a3b8">H10</span> 相同社会文化→降低隐性摩擦
+	</div>
+	<div style="background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.15);border-radius:8px;padding:8px;">
+	<strong style="color:#f97316">🆘 社会支持系统缺失</strong><br>
+	<span style="color:#f87171">⚠ H11</span> 求助0% vs 需求21%(缺口21pp)
+	</div>
+	</div>
+	</div>
+
+
+<div class="section-title" id="section-variable">🔬 变量筛选决策：保留 vs 淘汰</div>
+
+	<div class="card" style="margin-bottom:16px">
+	<h3>分析逻辑</h3>
+	<div class="insight-box" style="margin-top:0;font-size:13px;">
+	以<strong>焦虑天数、被吵醒次数、舍友关系、调宿念头、冲突次数</strong>五项幸福感指标为共同效标，逐一检验15个候选预测变量的效应量与显著性。筛选标准：<strong>覆盖≥3/5指标且|d|≥0.3或p&lt;0.05 → 保留；覆盖&lt;2/5指标或所有p>0.1 → 降权/移除</strong>。原始问卷50题 → 优化版36题。
+	</div>
+	</div>
+
+	<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+	<!-- LEFT: Retained -->
+	<div class="card">
+	<h3 style="color:#10b981">✅ 保留并纳入分配系统（10项）</h3>
+	<div style="font-size:12px;line-height:1.6;">
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:4px;">
+	<strong style="color:#10b981">★ 作息节律 L/O</strong> — 最强预测因子<br>
+	<span style="color:#94a3b8">覆盖5/5指标 | 被吵醒 rho=-0.539** | 极端组 d=2.04**</span><br>
+	<span style="color:#10b981">→ 分配系统第一权重（×5）</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:4px;">
+	<strong style="color:#10b981">★ 睡眠噪音敏感度 Q40</strong> — 7类分型<br>
+	<span style="color:#94a3b8">高低敏感组焦虑差3倍 | Kruskal-Wallis p=0.003**</span><br>
+	<span style="color:#10b981">→ 分配系统第二权重（×4）</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:4px;">
+	<strong style="color:#10b981">★ 特殊需求 Q39</strong> — 全假设最大效应量<br>
+	<span style="color:#94a3b8">有需求→重视生活习惯 d=1.31** | 覆盖3/5指标</span><br>
+	<span style="color:#10b981">→ 稀有保护算法输入</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:4px;">
+	<strong style="color:#10b981">★ 生源地（城镇/农村）</strong> — 曾误判为不显著<br>
+	<span style="color:#94a3b8">经济条件位次 d=0.744** | 安静需求 46% vs 15%（3倍）</span><br>
+	<span style="color:#10b981">→ 对农村生加权"经济兼容"+"安静环境"</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:4px;">
+	<strong style="color:#10b981">★ 卫生标准/习惯 T/M</strong> — 覆盖面最广<br>
+	<span style="color:#94a3b8">被吵醒 rho=0.39** | 公平感 rho=0.37** | 沟通 rho=0.32*</span><br>
+	<span style="color:#10b981">→ 分配系统辅助权重（×3）</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:4px;">
+	<strong style="color:#10b981">★ 游戏频率&时段 Q32/Q34</strong> — 覆盖5/5指标<br>
+	<span style="color:#94a3b8">游戏者被吵醒1.71次 vs 非游戏者3.57次 d=-0.86**</span><br>
+	<span style="color:#10b981">→ 区分"噪音产出型"与"安静型"作息</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(16,185,129,.08);border-left:3px solid #10b981;border-radius:4px;">
+	<strong style="color:#10b981">★ 冲突沟通方式 Q20</strong> — 预测调宿念头最强<br>
+	<span style="color:#94a3b8">主动 vs 非主动: 调宿 d=0.77** | 关系 d=0.60**</span><br>
+	<span style="color:#10b981">→ 标注沟通偏好（主动/被动/第三方）</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(16,185,129,.06);border-left:3px solid #06b6d4;border-radius:4px;">
+	<strong style="color:#06b6d4">☆ 硬件满意度 Q27</strong> — 完全中介链成立<br>
+	<span style="color:#94a3b8">硬件→公平感 rho=-0.21* | 公平感→关系 rho=0.32**</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(16,185,129,.06);border-left:3px solid #06b6d4;border-radius:4px;">
+	<strong style="color:#06b6d4">☆ 住校经历 Q8/Q9</strong> — 预适应标记<br>
+	<span style="color:#94a3b8">无经历者痛苦更高 d=-0.54* | 新生预适应标注</span>
+	</div>
+
+	<div style="margin-bottom:8px;padding:8px 10px;background:rgba(16,185,129,.06);border-left:3px solid #06b6d4;border-radius:4px;">
+	<strong style="color:#06b6d4">☆ 独生子女</strong> — 冲突模式独特<br>
+	<span style="color:#94a3b8">第三方调解 29% vs 非独生6%（近5倍）| Q41偏好 d=0.41*</span>
+	</div>
+
+	</div>
+	</div>
+
+	<!-- RIGHT: Removed / Downgraded -->
+	<div class="card">
+	<h3 style="color:#ef4444">❌ 降权或移除（5项）</h3>
+	<div style="font-size:12px;line-height:1.6;">
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:4px;">
+	<strong style="color:#ef4444">✗ E/I 社交能量维度</strong> — 0项显著<br>
+	<span style="color:#94a3b8">E型 vs I型在所有幸福感指标上d均<0.3 | H2不支持</span><br>
+	<span style="color:#f87171">→ 从Q43四维度精简为三维度（L/O+T/M+D/Z）</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:4px;">
+	<strong style="color:#ef4444">✗ D/Z冲突模式（D维度）</strong> — 人格≠行为<br>
+	<span style="color:#94a3b8">D型33%直接沟通 vs Z型43% | Fisher p=1.0 | H4不支持</span><br>
+	<span style="color:#f87171">→ D维度保留但降权——实际沟通行为(Q20)替代人格标签</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:4px;">
+	<strong style="color:#ef4444">✗ 锻炼频率</strong> — 效应量极小<br>
+	<span style="color:#94a3b8">与焦虑 rho=0.04 | 与关系 rho=0.10 | 与调宿 rho=0.15</span><br>
+	<span style="color:#f87171">→ 从分配问卷中删除，节省1题</span>
+	</div>
+
+	<div style="margin-bottom:12px;padding:8px 10px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:4px;">
+	<strong style="color:#ef4444">✗ 经济条件（整体）</strong> — 仅子群体显著<br>
+	<span style="color:#94a3b8">Q41整体排最末(3.92) | 仅农村生显著重视(p=0.0048**)</span><br>
+	<span style="color:#f87171">→ 不纳入普适权重 → 改由生源地触发条件加权</span>
+	</div>
+
+	<div style="margin-bottom:8px;padding:8px 10px;background:rgba(239,68,68,.08);border-left:3px solid #ef4444;border-radius:4px;">
+	<strong style="color:#ef4444">✗ 民族/地域文化</strong> — 样本不足<br>
+	<span style="color:#94a3b8">汉族占97% | 民族维度无分析效力 | H10定性保留</span><br>
+	<span style="color:#f87171">→ 分配系统中不作为硬匹配因子</span>
+	</div>
+
+	</div>
+	</div>
+	</div>
+
+	<!-- Summary: Before vs After -->
+	<div class="card" style="margin-bottom:12px">
+	<h3>📊 变量筛选汇总：15个候选 → 10保留 + 5降权/移除</h3>
+	<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font-size:11px;text-align:center;">
+	<div style="background:rgba(16,185,129,.08);border-radius:8px;padding:8px;">
+	<div style="color:#10b981;font-weight:700;">★ 作息节律</div><div style="color:#64748b">d=2.04**</div><div style="color:#10b981;font-size:10px;">第一权重×5</div></div>
+	<div style="background:rgba(16,185,129,.08);border-radius:8px;padding:8px;">
+	<div style="color:#10b981;font-weight:700;">★ 噪音敏感</div><div style="color:#64748b">p=0.003**</div><div style="color:#10b981;font-size:10px;">第二权重×4</div></div>
+	<div style="background:rgba(16,185,129,.08);border-radius:8px;padding:8px;">
+	<div style="color:#10b981;font-weight:700;">★ 特殊需求</div><div style="color:#64748b">d=1.31**</div><div style="color:#10b981;font-size:10px;">稀有保护</div></div>
+	<div style="background:rgba(16,185,129,.08);border-radius:8px;padding:8px;">
+	<div style="color:#10b981;font-weight:700;">★ 生源地</div><div style="color:#64748b">d=0.74**</div><div style="color:#10b981;font-size:10px;">条件加权</div></div>
+	<div style="background:rgba(16,185,129,.08);border-radius:8px;padding:8px;">
+	<div style="color:#10b981;font-weight:700;">★ 游戏频率</div><div style="color:#64748b">d=-0.86**</div><div style="color:#10b981;font-size:10px;">噪音分型</div></div>
+	<div style="background:rgba(16,185,129,.06);border-radius:8px;padding:8px;">
+	<div style="color:#06b6d4;font-weight:700;">☆ T/M卫生</div><div style="color:#64748b">3项**</div><div style="color:#06b6d4;font-size:10px;">辅助权重×3</div></div>
+	<div style="background:rgba(16,185,129,.06);border-radius:8px;padding:8px;">
+	<div style="color:#06b6d4;font-weight:700;">☆ 沟通方式</div><div style="color:#64748b">d=0.77**</div><div style="color:#06b6d4;font-size:10px;">偏好标注</div></div>
+	<div style="background:rgba(16,185,129,.06);border-radius:8px;padding:8px;">
+	<div style="color:#06b6d4;font-weight:700;">☆ 硬件满意度</div><div style="color:#64748b">完全中介</div><div style="color:#06b6d4;font-size:10px;">非分配因子</div></div>
+	<div style="background:rgba(16,185,129,.06);border-radius:8px;padding:8px;">
+	<div style="color:#06b6d4;font-weight:700;">☆ 住校经历</div><div style="color:#64748b">d=-0.54*</div><div style="color:#06b6d4;font-size:10px;">预适应标注</div></div>
+	<div style="background:rgba(16,185,129,.06);border-radius:8px;padding:8px;">
+	<div style="color:#06b6d4;font-weight:700;">☆ 独生子女</div><div style="color:#64748b">5倍差</div><div style="color:#06b6d4;font-size:10px;">调解偏好标注</div></div>
+	</div>
+	<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font-size:11px;text-align:center;margin-top:8px;">
+	<div style="background:rgba(239,68,68,.06);border-radius:8px;padding:8px;">
+	<div style="color:#ef4444;font-weight:700;">✗ E/I维度</div><div style="color:#64748b">0项显著</div><div style="color:#ef4444;font-size:10px;">从Q43移除</div></div>
+	<div style="background:rgba(239,68,68,.06);border-radius:8px;padding:8px;">
+	<div style="color:#ef4444;font-weight:700;">✗ D人格→沟通</div><div style="color:#64748b">Fisher p=1.0</div><div style="color:#ef4444;font-size:10px;">改用Q20行为</div></div>
+	<div style="background:rgba(239,68,68,.06);border-radius:8px;padding:8px;">
+	<div style="color:#ef4444;font-weight:700;">✗ 锻炼频率</div><div style="color:#64748b">rho<0.15</div><div style="color:#ef4444;font-size:10px;">删除</div></div>
+	<div style="background:rgba(239,68,68,.06);border-radius:8px;padding:8px;">
+	<div style="color:#ef4444;font-weight:700;">✗ 经济条件</div><div style="color:#64748b">总排最末</div><div style="color:#ef4444;font-size:10px;">条件触发</div></div>
+	<div style="background:rgba(239,68,68,.06);border-radius:8px;padding:8px;">
+	<div style="color:#ef4444;font-weight:700;">✗ 民族</div><div style="color:#64748b">汉族97%</div><div style="color:#ef4444;font-size:10px;">不纳入</div></div>
+	</div>
+	</div>
 
 
 <div class="section-title" id="section-mvp">🚀 宿舍分配系统MVP — 优化方案演示</div>
@@ -1055,6 +1291,12 @@ const persLabels=['ELTD\n阳光舍长','ELTZ\n温和管家','ELMD\n早起冲锋'
 const persVals=[5,0,2,1,6,1,2,0,3,8,0,0,4,2,1,6];
 new Chart(document.getElementById('personalityChart'),{type:'bar',data:{labels:persLabels,datasets:[{data:persVals,backgroundColor:persVals.map((_,i)=>'hsl('+(i*22.5)+',60%,60%)')}]},options:{...opt,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8',maxRotation:45,minRotation:45}}}}});
 
+
+// Bedtime distribution chart
+new Chart(document.getElementById('bedtimeDistChart'),{type:'bar',data:{labels:['22:00-22:59','23:00-23:59','00:00-00:59','01:00-01:59','02:00后'],datasets:[{data:[2,51,31,22,4],backgroundColor:['#10b981','#f59e0b','#f87171','#ef4444','#b91c1c']}]},options:{...opt,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){const p=(c.raw/110*100).toFixed(1);return c.raw+'人 ('+p+'%)'}}}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},title:{display:true,text:'人数',color:'#94a3b8'}},x:{ticks:{color:'#94a3b8',font:{size:10}}}}}});
+
+// Anxiety & disturbed by bedtime group
+new Chart(document.getElementById('bedtimeAnxietyChart'),{type:'bar',data:{labels:['23:00-23:59\n(偏早型)','00:00-00:59\n(主流)','01:00后\n(深夜型)'],datasets:[{label:'周均焦虑天数',data:[2.92,2.24,2.88],backgroundColor:'#f87171'},{label:'周均被吵醒次数',data:[3.12,2.28,2.81],backgroundColor:'#f59e0b'}]},options:{...opt,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:12}}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},title:{display:true,text:'天数/次数（周均）',color:'#94a3b8'}},x:{ticks:{color:'#94a3b8',font:{size:11}}}}}});
 new Chart(document.getElementById('improveChart'),{type:'bar',data:{labels:['改善硬件设施','优化管理制度','提升后勤服务','心理支持/调解','加强文化建设'],datasets:[{data:[36,24,17,12,7],backgroundColor:['#818cf8','#06b6d4','#10b981','#f59e0b','#ec4899']}]},options:{...opt,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#334155'},ticks:{color:'#94a3b8'}},x:{ticks:{color:'#94a3b8'}}}}});
 // Validity ranking chart
 new Chart(document.getElementById('validityChart'),{type:'bar',data:{labels:['D/Z ⚔️\n冲突模式','T/M 🧹\n空间秩序','L/O 🌙\n作息节律','E/I 🧬\n社交能量'],datasets:[{data:[3,2,1,0],backgroundColor:['#10b981','#06b6d4','#f59e0b','#ef4444']}]},options:{...opt,indexAxis:'y',plugins:{...opt.plugins,pctLabels:{enabled:false},legend:{display:false},tooltip:{callbacks:{label:function(c){return ['最佳: 中等效应量(Cramér V=0.21), 方向正确','良好: 中等效应量(Cohen d=0.38), 多项Spearman显著','中等: 小效应量(Cramér V=0.16), 方向正确, 反向相关显著','较弱: 效应量小(d=-0.27), 方向存疑'][c.dataIndex]}}}},scales:{x:{grid:{color:'#334155'},ticks:{color:'#94a3b8'},min:0,max:4,title:{display:true,text:'效度得分',color:'#94a3b8'}},y:{ticks:{color:'#94a3b8',font:{size:13}}}}}});
